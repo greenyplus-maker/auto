@@ -1,0 +1,34 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-white text-black;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 모바일 터치 영역 최소 크기 */
+button:not([class*="text-xs"]):not([class*="text-sm"]), 
+a:not([class*="text-xs"]):not([class*="text-sm"]) {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* 모바일에서 더 나은 스크롤 */
+html {
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+/* 모바일에서 입력 필드 확대 방지 */
+input, select, textarea {
+  font-size: 16px;
+}
+
+@media (min-width: 768px) {
+  input, select, textarea {
+    font-size: inherit;
+  }
+}
+
