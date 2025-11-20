@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useItineraryStore } from '@/store/itineraryStore'
@@ -9,6 +9,7 @@ import { generateRecommendedItineraries } from '@/lib/recommendedItineraries'
 export default function Home() {
   const router = useRouter()
   const { resetOnboarding, onboardingPreferences, onboardingCompleted, setItinerary, setPreferences } = useItineraryStore()
+  const [currentIndex, setCurrentIndex] = useState(0)
   
   const recommendedItineraries = useMemo(() => {
     if (!onboardingPreferences || !onboardingCompleted) {
@@ -27,6 +28,18 @@ export default function Home() {
     router.push('/plan')
   }
   
+  const handlePrevious = () => {
+    setCurrentIndex((prev) => (prev === 0 ? recommendedItineraries.length - 1 : prev - 1))
+  }
+  
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev === recommendedItineraries.length - 1 ? 0 : prev + 1))
+  }
+  
+  const handleDotClick = (index: number) => {
+    setCurrentIndex(index)
+  }
+  
   return (
     <main className="min-h-screen p-4 md:p-8">
       <div className="max-w-2xl mx-auto">
@@ -43,48 +56,79 @@ export default function Home() {
         {recommendedItineraries.length > 0 && (
           <div className="mb-8 md:mb-10">
             <h2 className="text-lg md:text-xl font-bold mb-4 md:mb-6">추천 일정</h2>
-            <p className="text-sm md:text-base text-gray-600 mb-4">
-              당신의 취향에 맞춘 추천 일정입니다
-            </p>
-            <div className="space-y-3 md:space-y-4">
-              {recommendedItineraries.map((itinerary, index) => {
-                const days = itinerary.days.length
-                const labels = ['3일 여행', '5일 여행', '7일 여행']
-                
-                return (
+            
+            {/* 캐러셀 */}
+            <div className="relative">
+              <div className="overflow-hidden">
+                <div 
+                  className="flex transition-transform duration-300 ease-in-out"
+                  style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+                >
+                  {recommendedItineraries.map((itinerary, index) => {
+                    const labels = ['3일', '5일', '7일']
+                    
+                    return (
+                      <div
+                        key={index}
+                        className="w-full flex-shrink-0 px-2"
+                      >
+                        <button
+                          onClick={() => handleSelectRecommendation(itinerary)}
+                          className="w-full border-2 border-gray-300 p-8 md:p-12 hover:border-black hover:bg-gray-50 active:bg-gray-100 transition-all touch-manipulation"
+                        >
+                          <div className="text-center">
+                            <h3 className="text-3xl md:text-4xl font-bold mb-2">
+                              {labels[index]}
+                            </h3>
+                            <p className="text-sm md:text-base text-gray-600">
+                              여행
+                            </p>
+                          </div>
+                        </button>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+              
+              {/* 이전/다음 버튼 */}
+              {recommendedItineraries.length > 1 && (
+                <>
+                  <button
+                    onClick={handlePrevious}
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-4 bg-white border border-gray-300 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-gray-100 transition-colors touch-manipulation"
+                    aria-label="이전"
+                  >
+                    ←
+                  </button>
+                  <button
+                    onClick={handleNext}
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-4 bg-white border border-gray-300 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-gray-100 transition-colors touch-manipulation"
+                    aria-label="다음"
+                  >
+                    →
+                  </button>
+                </>
+              )}
+            </div>
+            
+            {/* 인디케이터 */}
+            {recommendedItineraries.length > 1 && (
+              <div className="flex justify-center gap-2 mt-4">
+                {recommendedItineraries.map((_, index) => (
                   <button
                     key={index}
-                    onClick={() => handleSelectRecommendation(itinerary)}
-                    className="w-full text-left border-2 border-gray-300 p-4 md:p-5 hover:border-black hover:bg-gray-50 active:bg-gray-100 transition-all touch-manipulation"
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-base md:text-lg mb-1">
-                          {labels[index] || `${days}일 여행`}
-                        </h3>
-                        <p className="text-sm md:text-base text-gray-600 mb-2">
-                          {itinerary.city} · {itinerary.startDate} ~ {itinerary.endDate}
-                        </p>
-                        <div className="flex flex-wrap gap-2 mb-2">
-                          <span className="text-xs md:text-sm px-2 py-1 bg-gray-100 text-gray-700">
-                            {itinerary.preferences.style === 'relaxed' ? '여유롭게' : itinerary.preferences.style === 'normal' ? '보통' : '빡빡하게'}
-                          </span>
-                          {itinerary.preferences.interests.length > 0 && (
-                            <span className="text-xs md:text-sm px-2 py-1 bg-gray-100 text-gray-700">
-                              {itinerary.preferences.interests.length}개 관심사
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-xs md:text-sm text-gray-500">
-                          {days}일 · {itinerary.days.reduce((sum, day) => sum + day.slots.length, 0)}개 활동
-                        </p>
-                      </div>
-                      <span className="text-gray-400 text-lg md:text-xl ml-4">→</span>
-                    </div>
-                  </button>
-                )
-              })}
-            </div>
+                    onClick={() => handleDotClick(index)}
+                    className={`w-2 h-2 rounded-full transition-all touch-manipulation ${
+                      currentIndex === index
+                        ? 'bg-black w-6'
+                        : 'bg-gray-300'
+                    }`}
+                    aria-label={`${index + 1}번째 추천 일정`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         )}
         
