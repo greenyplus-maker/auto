@@ -68,7 +68,7 @@ export function Onboarding() {
   }
   
   const handleNext = () => {
-    if (currentStep < 4) {
+    if (currentStep < 5) {
       setCurrentStep(currentStep + 1)
     } else {
       handleComplete()
@@ -282,6 +282,71 @@ export function Onboarding() {
           </div>
         )
       
+      case 5: // 서머리
+        return (
+          <div className="space-y-4">
+            <p className="text-sm md:text-base text-gray-600 mb-6">
+              선택하신 정보를 확인해주세요
+            </p>
+            <div className="space-y-4">
+              <div className="border border-gray-300 p-4">
+                <h3 className="text-sm md:text-base font-semibold mb-2">여행 스타일</h3>
+                <p className="text-sm md:text-base text-gray-700">
+                  {preferences.style === 'relaxed' ? '여유롭게' : preferences.style === 'normal' ? '보통' : '빡빡하게'}
+                </p>
+              </div>
+              
+              <div className="border border-gray-300 p-4">
+                <h3 className="text-sm md:text-base font-semibold mb-2">관심 활동</h3>
+                {preferences.interests.length > 0 ? (
+                  <div className="flex flex-wrap gap-2">
+                    {preferences.interests.map((interest) => {
+                      const interestLabel = interests.find((i) => i.value === interest)?.label
+                      return (
+                        <span key={interest} className="text-xs md:text-sm px-2 py-1 bg-gray-100 text-gray-700">
+                          {interestLabel}
+                        </span>
+                      )
+                    })}
+                  </div>
+                ) : (
+                  <p className="text-sm md:text-base text-gray-500">선택하지 않음</p>
+                )}
+              </div>
+              
+              <div className="border border-gray-300 p-4">
+                <h3 className="text-sm md:text-base font-semibold mb-2">예산 수준</h3>
+                <p className="text-sm md:text-base text-gray-700">
+                  {preferences.budget === 'low' ? '낮음' : preferences.budget === 'medium' ? '보통' : '높음'}
+                </p>
+              </div>
+              
+              <div className="border border-gray-300 p-4">
+                <h3 className="text-sm md:text-base font-semibold mb-2">여행 인원</h3>
+                <p className="text-sm md:text-base text-gray-700">
+                  성인 {preferences.adults}명
+                  {preferences.children > 0 && (
+                    <>
+                      {' · '}
+                      아이 {preferences.children}명
+                      {preferences.childAgeGroup && (
+                        <> ({preferences.childAgeGroup === 'under6' ? '6세 미만' : preferences.childAgeGroup === '6to12' ? '6-12세' : '13세 이상'})</>
+                      )}
+                    </>
+                  )}
+                </p>
+              </div>
+              
+              <div className="border border-gray-300 p-4">
+                <h3 className="text-sm md:text-base font-semibold mb-2">선호 도시</h3>
+                <p className="text-sm md:text-base text-gray-700">
+                  {preferences.city || '선택하지 않음'}
+                </p>
+              </div>
+            </div>
+          </div>
+        )
+      
       default:
         return null
     }
@@ -293,6 +358,7 @@ export function Onboarding() {
     '예산 수준',
     '여행 인원',
     '선호 도시',
+    '확인',
   ]
   
   const canProceed = () => {
@@ -307,12 +373,14 @@ export function Onboarding() {
         return preferences.adults > 0 && (preferences.children === 0 || preferences.childAgeGroup !== null)
       case 4:
         return preferences.city !== null
+      case 5:
+        return true // 서머리는 항상 진행 가능
       default:
         return false
     }
   }
   
-  const isLastStep = currentStep === 4
+  const isLastStep = currentStep === 5
   
   return (
     <div className="fixed inset-0 z-50 bg-white flex items-center justify-center p-4 overflow-y-auto">
@@ -322,7 +390,7 @@ export function Onboarding() {
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
               <span className="text-xs md:text-sm text-gray-600">
-                {currentStep + 1} / 5
+                {currentStep + 1} / 6
               </span>
               <button
                 onClick={handleSkip}
@@ -334,7 +402,7 @@ export function Onboarding() {
             <div className="w-full h-1 bg-gray-200">
               <div
                 className="h-full bg-black transition-all duration-300"
-                style={{ width: `${((currentStep + 1) / 5) * 100}%` }}
+                style={{ width: `${((currentStep + 1) / 6) * 100}%` }}
               ></div>
             </div>
           </div>
