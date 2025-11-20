@@ -18,18 +18,18 @@ const interests = [
 
 export default function NewPlanPage() {
   const router = useRouter()
-  const { setPreferences } = useItineraryStore()
+  const { setPreferences, onboardingPreferences } = useItineraryStore()
   
   const [formData, setFormData] = useState<Partial<TripPreferences>>({
-    city: '',
+    city: onboardingPreferences?.city || '',
     startDate: '',
     endDate: '',
-    adults: 2,
-    children: 0,
-    childAgeGroup: '6to12',
-    style: 'normal',
-    interests: [],
-    budget: 'medium',
+    adults: onboardingPreferences?.adults || 2,
+    children: onboardingPreferences?.children || 0,
+    childAgeGroup: (onboardingPreferences?.childAgeGroup as any) || '6to12',
+    style: (onboardingPreferences?.style as any) || 'normal',
+    interests: onboardingPreferences?.interests || [],
+    budget: (onboardingPreferences?.budget as any) || 'medium',
   })
   
   const handleSubmit = (e: React.FormEvent) => {

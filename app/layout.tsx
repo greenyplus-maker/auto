@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import './globals.css'
 import { Navigation } from '@/components/Navigation'
+import { OnboardingWrapper } from '@/components/OnboardingWrapper'
 
 export const metadata: Metadata = {
   title: '일본 여행 일정 자동 생성기',
@@ -17,6 +18,7 @@ export default function RootLayout({
       <body>
         <Navigation />
         {children}
+        <OnboardingWrapper />
       </body>
     </html>
   )

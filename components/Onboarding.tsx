@@ -1,0 +1,376 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useItineraryStore } from '@/store/itineraryStore'
+import type { TravelStyle, Budget, ChildAgeGroup } from '@/types'
+
+interface OnboardingPreferences {
+  style: TravelStyle | null
+  interests: string[]
+  budget: Budget | null
+  adults: number
+  children: number
+  childAgeGroup: ChildAgeGroup | null
+  city: string | null
+}
+
+const interests = [
+  { value: 'cafe', label: '카페' },
+  { value: 'restaurant', label: '맛집' },
+  { value: 'shopping', label: '쇼핑' },
+  { value: 'museum', label: '박물관/사원' },
+  { value: 'themePark', label: '테마파크' },
+  { value: 'nature', label: '자연/공원' },
+]
+
+const cities = ['도쿄', '오사카', '교토', '후쿠오카', '아직 정하지 않음']
+
+export function Onboarding() {
+  const router = useRouter()
+  const { onboardingCompleted, showOnboarding, completeOnboarding, setOnboardingPreferences } = useItineraryStore()
+  const [currentStep, setCurrentStep] = useState(0)
+  const [mounted, setMounted] = useState(false)
+  const [shouldShow, setShouldShow] = useState(false)
+  const [preferences, setPreferences] = useState<OnboardingPreferences>({
+    style: null,
+    interests: [],
+    budget: null,
+    adults: 2,
+    children: 0,
+    childAgeGroup: null,
+    city: null,
+  })
+  
+  useEffect(() => {
+    setMounted(true)
+    if (showOnboarding || !onboardingCompleted) {
+      try {
+        const stored = localStorage.getItem('itinerary-storage')
+        if (stored) {
+          const parsed = JSON.parse(stored)
+          if (parsed?.state?.onboardingCompleted && !parsed?.state?.showOnboarding) {
+            setShouldShow(false)
+            return
+          }
+        }
+        setShouldShow(true)
+      } catch (e) {
+        setShouldShow(true)
+      }
+    } else {
+      setShouldShow(false)
+    }
+  }, [showOnboarding, onboardingCompleted])
+  
+  if (!mounted || !shouldShow) {
+    return null
+  }
+  
+  const handleNext = () => {
+    if (currentStep < 4) {
+      setCurrentStep(currentStep + 1)
+    } else {
+      handleComplete()
+    }
+  }
+  
+  const handlePrevious = () => {
+    if (currentStep > 0) {
+      setCurrentStep(currentStep - 1)
+    }
+  }
+  
+  const handleSkip = () => {
+    handleComplete()
+  }
+  
+  const handleComplete = () => {
+    // 수집한 취향 정보 저장
+    setOnboardingPreferences(preferences)
+    completeOnboarding()
+    router.push('/')
+  }
+  
+  const handleInterestToggle = (interest: string) => {
+    const current = preferences.interests || []
+    if (current.includes(interest)) {
+      setPreferences({ ...preferences, interests: current.filter((i) => i !== interest) })
+    } else {
+      setPreferences({ ...preferences, interests: [...current, interest] })
+    }
+  }
+  
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 0: // 여행 스타일
+        return (
+          <div className="space-y-4">
+            <p className="text-sm md:text-base text-gray-600 mb-4">
+              어떤 여행 스타일을 선호하시나요?
+            </p>
+            <div className="space-y-3">
+              {(['relaxed', 'normal', 'intensive'] as TravelStyle[]).map((style) => (
+                <button
+                  key={style}
+                  onClick={() => setPreferences({ ...preferences, style })}
+                  className={`w-full text-left border-2 p-4 transition-colors touch-manipulation ${
+                    preferences.style === style
+                      ? 'border-black bg-black text-white'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <div className="font-medium text-sm md:text-base mb-1">
+                    {style === 'relaxed' ? '여유롭게' : style === 'normal' ? '보통' : '빡빡하게'}
+                  </div>
+                  <div className="text-xs md:text-sm text-gray-600">
+                    {style === 'relaxed' 
+                      ? '하루에 2-3개 활동, 여유로운 일정'
+                      : style === 'normal'
+                      ? '하루에 3-4개 활동, 균형잡힌 일정'
+                      : '하루에 4-5개 활동, 알찬 일정'}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )
+      
+      case 1: // 관심사
+        return (
+          <div className="space-y-4">
+            <p className="text-sm md:text-base text-gray-600 mb-4">
+              관심 있는 활동을 선택해주세요 (복수 선택 가능)
+            </p>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+              {interests.map((interest) => (
+                <button
+                  key={interest.value}
+                  onClick={() => handleInterestToggle(interest.value)}
+                  className={`border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation ${
+                    preferences.interests.includes(interest.value)
+                      ? 'border-black bg-black text-white'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  {interest.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )
+      
+      case 2: // 예산
+        return (
+          <div className="space-y-4">
+            <p className="text-sm md:text-base text-gray-600 mb-4">
+              예산 수준을 선택해주세요
+            </p>
+            <div className="space-y-3">
+              {(['low', 'medium', 'high'] as Budget[]).map((budget) => (
+                <button
+                  key={budget}
+                  onClick={() => setPreferences({ ...preferences, budget })}
+                  className={`w-full text-left border-2 p-4 transition-colors touch-manipulation ${
+                    preferences.budget === budget
+                      ? 'border-black bg-black text-white'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <div className="font-medium text-sm md:text-base mb-1">
+                    {budget === 'low' ? '낮음' : budget === 'medium' ? '보통' : '높음'}
+                  </div>
+                  <div className="text-xs md:text-sm text-gray-600">
+                    {budget === 'low'
+                      ? '저렴한 식당과 무료 관광지 중심'
+                      : budget === 'medium'
+                      ? '적당한 가격대의 식당과 관광지'
+                      : '고급 레스토랑과 프리미엄 경험'}
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )
+      
+      case 3: // 여행자 구성
+        return (
+          <div className="space-y-6">
+            <p className="text-sm md:text-base text-gray-600 mb-4">
+              여행 인원을 알려주세요
+            </p>
+            <div>
+              <label className="block text-sm md:text-base font-medium mb-2">성인 수</label>
+              <div className="flex gap-2">
+                {[1, 2, 3, 4, 5].map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => setPreferences({ ...preferences, adults: num })}
+                    className={`flex-1 border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation ${
+                      preferences.adults === num
+                        ? 'border-black bg-black text-white'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    {num}명
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-sm md:text-base font-medium mb-2">아이 수</label>
+              <div className="flex gap-2">
+                {[0, 1, 2, 3].map((num) => (
+                  <button
+                    key={num}
+                    onClick={() => setPreferences({ ...preferences, children: num, childAgeGroup: num > 0 ? preferences.childAgeGroup || '6to12' : null })}
+                    className={`flex-1 border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation ${
+                      preferences.children === num
+                        ? 'border-black bg-black text-white'
+                        : 'border-gray-300 hover:border-gray-400'
+                    }`}
+                  >
+                    {num}명
+                  </button>
+                ))}
+              </div>
+            </div>
+            {preferences.children > 0 && (
+              <div>
+                <label className="block text-sm md:text-base font-medium mb-2">아이 연령대</label>
+                <div className="space-y-2">
+                  {(['under6', '6to12', '13plus'] as ChildAgeGroup[]).map((ageGroup) => (
+                    <button
+                      key={ageGroup}
+                      onClick={() => setPreferences({ ...preferences, childAgeGroup: ageGroup })}
+                      className={`w-full text-left border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation ${
+                        preferences.childAgeGroup === ageGroup
+                          ? 'border-black bg-black text-white'
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      {ageGroup === 'under6' ? '6세 미만' : ageGroup === '6to12' ? '6-12세' : '13세 이상'}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )
+      
+      case 4: // 선호 도시
+        return (
+          <div className="space-y-4">
+            <p className="text-sm md:text-base text-gray-600 mb-4">
+              선호하는 도시나 지역을 선택해주세요
+            </p>
+            <div className="space-y-3">
+              {cities.map((city) => (
+                <button
+                  key={city}
+                  onClick={() => setPreferences({ ...preferences, city })}
+                  className={`w-full text-left border-2 p-4 transition-colors touch-manipulation ${
+                    preferences.city === city
+                      ? 'border-black bg-black text-white'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  <div className="font-medium text-sm md:text-base">{city}</div>
+                </button>
+              ))}
+            </div>
+          </div>
+        )
+      
+      default:
+        return null
+    }
+  }
+  
+  const stepTitles = [
+    '여행 스타일',
+    '관심 활동',
+    '예산 수준',
+    '여행 인원',
+    '선호 도시',
+  ]
+  
+  const canProceed = () => {
+    switch (currentStep) {
+      case 0:
+        return preferences.style !== null
+      case 1:
+        return true // 관심사는 선택사항
+      case 2:
+        return preferences.budget !== null
+      case 3:
+        return preferences.adults > 0 && (preferences.children === 0 || preferences.childAgeGroup !== null)
+      case 4:
+        return preferences.city !== null
+      default:
+        return false
+    }
+  }
+  
+  const isLastStep = currentStep === 4
+  
+  return (
+    <div className="fixed inset-0 z-50 bg-white flex items-center justify-center p-4 overflow-y-auto">
+      <div className="max-w-md w-full my-auto">
+        <div className="border border-gray-300 bg-white p-6 md:p-8">
+          {/* 진행 표시 */}
+          <div className="mb-6">
+            <div className="flex justify-between items-center mb-2">
+              <span className="text-xs md:text-sm text-gray-600">
+                {currentStep + 1} / 5
+              </span>
+              <button
+                onClick={handleSkip}
+                className="text-xs md:text-sm text-gray-600 hover:text-black transition-colors touch-manipulation"
+              >
+                건너뛰기
+              </button>
+            </div>
+            <div className="w-full h-1 bg-gray-200">
+              <div
+                className="h-full bg-black transition-all duration-300"
+                style={{ width: `${((currentStep + 1) / 5) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+          
+          {/* 콘텐츠 */}
+          <div className="mb-8 min-h-[300px] md:min-h-[350px]">
+            <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6 leading-tight">
+              {stepTitles[currentStep]}
+            </h2>
+            {renderStepContent()}
+          </div>
+          
+          {/* 버튼 */}
+          <div className="flex gap-3 md:gap-4">
+            {currentStep > 0 && (
+              <button
+                onClick={handlePrevious}
+                className="flex-1 border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-sm font-medium hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
+              >
+                이전
+              </button>
+            )}
+            <button
+              onClick={handleNext}
+              disabled={!canProceed()}
+              className={`${currentStep > 0 ? 'flex-1' : 'w-full'} border-2 border-black px-4 py-3 md:py-2 text-sm md:text-sm font-medium transition-colors touch-manipulation ${
+                canProceed()
+                  ? 'hover:bg-black hover:text-white active:bg-gray-800'
+                  : 'opacity-50 cursor-not-allowed'
+              }`}
+            >
+              {isLastStep ? '완료' : '다음'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

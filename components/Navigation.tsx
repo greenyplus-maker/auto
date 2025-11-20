@@ -19,7 +19,7 @@ const navItems: NavItem[] = [
 
 export function Navigation() {
   const pathname = usePathname()
-  const { itinerary } = useItineraryStore()
+  const { itinerary, resetOnboarding } = useItineraryStore()
   
   const visibleItems = navItems.filter((item) => {
     if (item.showWhen === 'always') return true
@@ -27,6 +27,10 @@ export function Navigation() {
     if (item.showWhen === 'noItinerary') return !itinerary
     return true
   })
+  
+  const handleShowOnboarding = () => {
+    resetOnboarding()
+  }
   
   return (
     <nav className="border-b border-gray-300 bg-white sticky top-0 z-50">
@@ -58,6 +62,13 @@ export function Navigation() {
                 </Link>
               )
             })}
+            <button
+              onClick={handleShowOnboarding}
+              className="text-xs md:text-sm text-gray-500 hover:text-black transition-colors py-2 px-2 md:px-3 touch-manipulation"
+              title="온보딩 다시보기"
+            >
+              ?
+            </button>
           </div>
         </div>
       </div>
