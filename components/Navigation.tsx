@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { useItineraryStore } from '@/store/itineraryStore'
@@ -20,6 +21,7 @@ const navItems: NavItem[] = [
 export function Navigation() {
   const pathname = usePathname()
   const { itinerary, resetOnboarding } = useItineraryStore()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   
   const visibleItems = navItems.filter((item) => {
     if (item.showWhen === 'always') return true
@@ -30,6 +32,11 @@ export function Navigation() {
   
   const handleShowOnboarding = () => {
     resetOnboarding()
+    setIsMenuOpen(false)
+  }
+  
+  const handleLinkClick = () => {
+    setIsMenuOpen(false)
   }
   
   return (
@@ -39,38 +46,63 @@ export function Navigation() {
           <Link 
             href="/" 
             className="text-base md:text-lg font-bold hover:text-gray-600 transition-colors py-2 px-2 -ml-2"
+            onClick={handleLinkClick}
           >
             일본 여행 일정
           </Link>
           
-          <div className="flex items-center gap-2 md:gap-4 lg:gap-6 overflow-x-auto">
-            {visibleItems.map((item) => {
-              const isActive = pathname === item.href || 
-                (item.href !== '/' && pathname?.startsWith(item.href))
-              
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`text-sm md:text-base font-medium transition-colors py-2 px-3 md:px-4 whitespace-nowrap ${
-                    isActive
-                      ? 'text-black border-b-2 border-black'
-                      : 'text-gray-600 hover:text-black'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              )
-            })}
-            <button
-              onClick={handleShowOnboarding}
-              className="text-xs md:text-sm text-gray-500 hover:text-black transition-colors py-2 px-2 md:px-3 touch-manipulation"
-              title="온보딩 다시보기"
-            >
-              ?
-            </button>
-          </div>
+          {/* 햄버거 버튼 */}
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="flex flex-col gap-1.5 p-2 touch-manipulation"
+            aria-label="메뉴"
+          >
+            <span className={`w-6 h-0.5 bg-black transition-all ${isMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+            <span className={`w-6 h-0.5 bg-black transition-all ${isMenuOpen ? 'opacity-0' : ''}`}></span>
+            <span className={`w-6 h-0.5 bg-black transition-all ${isMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+          </button>
         </div>
+        
+        {/* 메뉴 드로어 */}
+        {isMenuOpen && (
+          <>
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-50 z-40"
+              onClick={() => setIsMenuOpen(false)}
+            ></div>
+            <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-300 shadow-lg z-50">
+              <div className="max-w-6xl mx-auto px-4 md:px-8 py-4">
+                <div className="space-y-1">
+                  {visibleItems.map((item) => {
+                    const isActive = pathname === item.href || 
+                      (item.href !== '/' && pathname?.startsWith(item.href))
+                    
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={handleLinkClick}
+                        className={`block py-3 px-4 text-base font-medium transition-colors touch-manipulation ${
+                          isActive
+                            ? 'text-black bg-gray-100'
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        {item.label}
+                      </Link>
+                    )
+                  })}
+                  <button
+                    onClick={handleShowOnboarding}
+                    className="block w-full text-left py-3 px-4 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors touch-manipulation"
+                  >
+                    온보딩 다시보기
+                  </button>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
       </div>
     </nav>
   )
