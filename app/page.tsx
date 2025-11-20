@@ -65,7 +65,13 @@ export default function Home() {
                   style={{ transform: `translateX(-${currentIndex * 100}%)` }}
                 >
                   {recommendedItineraries.map((itinerary, index) => {
-                    const labels = ['3일', '5일', '7일']
+                    const days = itinerary.days.length
+                    const totalActivities = itinerary.days.reduce((sum, day) => sum + day.slots.length, 0)
+                    const startDate = new Date(itinerary.startDate)
+                    const endDate = new Date(itinerary.endDate)
+                    const month = startDate.getMonth() + 1
+                    const startDay = startDate.getDate()
+                    const endDay = endDate.getDate()
                     
                     return (
                       <div
@@ -74,15 +80,19 @@ export default function Home() {
                       >
                         <button
                           onClick={() => handleSelectRecommendation(itinerary)}
-                          className="w-full border-2 border-gray-300 p-8 md:p-12 hover:border-black hover:bg-gray-50 active:bg-gray-100 transition-all touch-manipulation"
+                          className="w-full border-2 border-gray-300 p-6 md:p-8 hover:border-black hover:bg-gray-50 active:bg-gray-100 transition-all touch-manipulation"
                         >
                           <div className="text-center">
-                            <h3 className="text-3xl md:text-4xl font-bold mb-2">
-                              {labels[index]}
+                            <h3 className="text-2xl md:text-3xl font-bold mb-3">
+                              {days}일 여행
                             </h3>
-                            <p className="text-sm md:text-base text-gray-600">
-                              여행
-                            </p>
+                            <div className="space-y-2 text-sm md:text-base text-gray-600">
+                              <p>{itinerary.city}</p>
+                              <p>{month}월 {startDay}일 - {endDay}일</p>
+                              <p className="text-xs md:text-sm text-gray-500">
+                                {totalActivities}개 활동
+                              </p>
+                            </div>
                           </div>
                         </button>
                       </div>
