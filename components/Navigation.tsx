@@ -64,14 +64,30 @@ export function Navigation() {
         </div>
         
         {/* 메뉴 드로어 */}
-        {isMenuOpen && (
-          <>
-            <div 
-              className="fixed inset-0 bg-black bg-opacity-50 z-40"
-              onClick={() => setIsMenuOpen(false)}
-            ></div>
-            <div className="absolute top-full left-0 right-0 bg-white border-b border-gray-300 shadow-lg z-50">
-              <div className="max-w-6xl mx-auto px-4 md:px-8 py-4">
+        <>
+          <div 
+            className={`fixed inset-0 bg-black bg-opacity-50 z-40 transition-opacity duration-300 ${
+              isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+            }`}
+            onClick={() => setIsMenuOpen(false)}
+          ></div>
+          <div 
+            className={`fixed top-0 right-0 h-full w-80 max-w-[85vw] bg-white shadow-lg z-50 transition-transform duration-300 ease-in-out ${
+              isMenuOpen ? 'translate-x-0' : 'translate-x-full'
+            }`}
+          >
+            <div className="h-full overflow-y-auto">
+              <div className="p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-lg font-bold">메뉴</h2>
+                  <button
+                    onClick={() => setIsMenuOpen(false)}
+                    className="p-2 hover:bg-gray-100 transition-colors touch-manipulation"
+                    aria-label="메뉴 닫기"
+                  >
+                    <span className="text-2xl">×</span>
+                  </button>
+                </div>
                 <div className="space-y-1">
                   {visibleItems.map((item) => {
                     const isActive = pathname === item.href || 
@@ -82,7 +98,7 @@ export function Navigation() {
                         key={item.href}
                         href={item.href}
                         onClick={handleLinkClick}
-                        className={`block py-3 px-4 text-base font-medium transition-colors touch-manipulation ${
+                        className={`block py-3 px-4 text-base font-medium transition-colors touch-manipulation rounded ${
                           isActive
                             ? 'text-black bg-gray-100'
                             : 'text-gray-700 hover:bg-gray-50'
@@ -94,15 +110,15 @@ export function Navigation() {
                   })}
                   <button
                     onClick={handleShowOnboarding}
-                    className="block w-full text-left py-3 px-4 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors touch-manipulation"
+                    className="block w-full text-left py-3 px-4 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors touch-manipulation rounded"
                   >
                     온보딩 다시보기
                   </button>
                 </div>
               </div>
             </div>
-          </>
-        )}
+          </div>
+        </>
       </div>
     </nav>
   )
