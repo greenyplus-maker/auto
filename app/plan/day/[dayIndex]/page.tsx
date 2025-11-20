@@ -26,33 +26,33 @@ export default function DayDetailPage() {
     if (slotIndex === 0) return
     
     const newDays = [...itinerary.days]
-    const day = { ...newDays[dayIndex] }
-    const slots = [...day.slots]
+    const currentDay = { ...newDays[dayIndex] }
+    const slots = [...currentDay.slots]
     ;[slots[slotIndex - 1], slots[slotIndex]] = [slots[slotIndex], slots[slotIndex - 1]]
-    day.slots = slots
-    newDays[dayIndex] = day
+    currentDay.slots = slots
+    newDays[dayIndex] = currentDay
     
     updateItinerary({ ...itinerary, days: newDays })
   }
   
   const handleMoveDown = (slotIndex: number) => {
-    if (slotIndex === day.slots.length - 1) return
+    if (slotIndex === itinerary.days[dayIndex].slots.length - 1) return
     
     const newDays = [...itinerary.days]
-    const day = { ...newDays[dayIndex] }
-    const slots = [...day.slots]
+    const currentDay = { ...newDays[dayIndex] }
+    const slots = [...currentDay.slots]
     ;[slots[slotIndex], slots[slotIndex + 1]] = [slots[slotIndex + 1], slots[slotIndex]]
-    day.slots = slots
-    newDays[dayIndex] = day
+    currentDay.slots = slots
+    newDays[dayIndex] = currentDay
     
     updateItinerary({ ...itinerary, days: newDays })
   }
   
   const handleRemove = (slotIndex: number) => {
     const newDays = [...itinerary.days]
-    const day = { ...newDays[dayIndex] }
-    day.slots = day.slots.filter((_, i) => i !== slotIndex)
-    newDays[dayIndex] = day
+    const currentDay = { ...newDays[dayIndex] }
+    currentDay.slots = currentDay.slots.filter((_, i) => i !== slotIndex)
+    newDays[dayIndex] = currentDay
     
     updateItinerary({ ...itinerary, days: newDays })
   }
