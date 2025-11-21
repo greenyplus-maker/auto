@@ -63,14 +63,22 @@ export default function SavedItinerariesPage() {
     const saved = savedItineraries.find((si) => si.id === editingConditionsId)
     if (!saved) return
     
-    // 새로운 일정 생성
-    const newItinerary = generateItinerary(preferences)
-    
-    // 저장된 일정 업데이트
-    updateSavedItinerary(editingConditionsId, newItinerary, saved.title)
-    
+    // 모달 닫기 (즉시 UI 반응)
     setEditingConditionsId(null)
-    alert('일정 조건이 수정되었습니다.')
+    
+    // 무거운 작업을 비동기로 처리하여 메인 스레드 블로킹 방지
+    setTimeout(() => {
+      // 새로운 일정 생성
+      const newItinerary = generateItinerary(preferences)
+      
+      // 저장된 일정 업데이트
+      updateSavedItinerary(editingConditionsId, newItinerary, saved.title)
+      
+      // 완료 알림
+      setTimeout(() => {
+        alert('일정 조건이 수정되었습니다.')
+      }, 0)
+    }, 0)
   }
 
   const formatDate = (dateString: string) => {

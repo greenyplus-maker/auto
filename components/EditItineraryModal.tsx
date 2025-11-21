@@ -185,8 +185,13 @@ export function EditItineraryModal({ isOpen, onClose, initialPreferences, onSave
     const summary = getPreferencesSummary(preferences)
     const confirmMessage = `다음 조건으로 일정을 재생성하시겠습니까?\n\n${summary}`
     
-    if (confirm(confirmMessage)) {
-      onSave(preferences)
+    // confirm을 비동기로 처리하여 메인 스레드 블로킹 방지
+    const shouldSave = confirm(confirmMessage)
+    if (shouldSave) {
+      // 즉시 UI 반응을 위해 setTimeout 사용
+      setTimeout(() => {
+        onSave(preferences)
+      }, 0)
     }
   }
 
