@@ -11,6 +11,7 @@ interface OnboardingPreferences {
   adults: number
   children: number
   childAgeGroups: string[] | null
+  groupType: string | null
   city: string | null
 }
 
