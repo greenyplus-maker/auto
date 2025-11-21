@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useItineraryStore } from '@/store/itineraryStore'
@@ -12,6 +12,27 @@ export default function Home() {
   const router = useRouter()
   const { resetOnboarding, onboardingPreferences, onboardingCompleted, setItinerary, setPreferences } = useItineraryStore()
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [itemsPerView, setItemsPerView] = useState(1)
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+  
+  useEffect(() => {
+    const updateItemsPerView = () => {
+      const width = window.innerWidth
+      // 각 아이템: 280px + gap 16px = 296px
+      // 모바일: 1개, 태블릿: 2개, 데스크톱: 3개
+      if (width >= 1024) {
+        setItemsPerView(3) // 데스크톱
+      } else if (width >= 768) {
+        setItemsPerView(2) // 태블릿
+      } else {
+        setItemsPerView(1) // 모바일
+      }
+    }
+    
+    updateItemsPerView()
+    window.addEventListener('resize', updateItemsPerView)
+    return () => window.removeEventListener('resize', updateItemsPerView)
+  }, [])
   
   const recommendedItineraries = useMemo(() => {
     if (!onboardingPreferences || !onboardingCompleted) {
@@ -47,16 +68,52 @@ export default function Home() {
     router.push('/plan')
   }
   
+  // 스크롤 이벤트로 currentIndex 업데이트
+  useEffect(() => {
+    const container = scrollContainerRef.current
+    if (!container || recommendedItineraries.length === 0) return
+
+    const handleScroll = () => {
+      const scrollLeft = container.scrollLeft
+      const itemWidth = 280 + 16 // 아이템 너비 + gap
+      const newIndex = Math.round(scrollLeft / itemWidth)
+      const maxIndex = Math.max(0, recommendedItineraries.length - itemsPerView)
+      setCurrentIndex(Math.min(newIndex, maxIndex))
+    }
+
+    container.addEventListener('scroll', handleScroll, { passive: true })
+    return () => container.removeEventListener('scroll', handleScroll)
+  }, [recommendedItineraries.length, itemsPerView])
+
+  const maxIndex = useMemo(() => {
+    return Math.max(0, recommendedItineraries.length - itemsPerView)
+  }, [recommendedItineraries.length, itemsPerView])
+  
   const handlePrevious = () => {
-    setCurrentIndex((prev) => (prev === 0 ? recommendedItineraries.length - 1 : prev - 1))
+    const container = scrollContainerRef.current
+    if (!container) return
+    
+    const itemWidth = 280 + 16
+    const scrollAmount = itemWidth * itemsPerView
+    container.scrollBy({ left: -scrollAmount, behavior: 'smooth' })
   }
   
   const handleNext = () => {
-    setCurrentIndex((prev) => (prev === recommendedItineraries.length - 1 ? 0 : prev + 1))
+    const container = scrollContainerRef.current
+    if (!container) return
+    
+    const itemWidth = 280 + 16
+    const scrollAmount = itemWidth * itemsPerView
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' })
   }
   
   const handleDotClick = (index: number) => {
-    setCurrentIndex(index)
+    const container = scrollContainerRef.current
+    if (!container) return
+    
+    const itemWidth = 280 + 16
+    const targetScrollLeft = index * itemWidth
+    container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' })
   }
   
   return (
@@ -76,12 +133,22 @@ export default function Home() {
           <div className="mb-8 md:mb-10">
             <h2 className="text-lg md:text-xl font-bold mb-4 md:mb-6">추천 일정</h2>
             
-            {/* 캐러셀 */}
-            <div className="relative">
-              <div className="overflow-hidden">
+            {/* 캐러셀 - 스크롤 방식 */}
+            <div className="relative w-full">
+              <div 
+                ref={scrollContainerRef}
+                className="overflow-x-auto scrollbar-hide w-full"
+                style={{ 
+                  scrollSnapType: 'x mandatory',
+                  scrollBehavior: 'smooth',
+                  WebkitOverflowScrolling: 'touch'
+                }}
+              >
                 <div 
-                  className="flex transition-transform duration-300 ease-in-out"
-                  style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+                  className="flex gap-4"
+                  style={{ 
+                    scrollSnapAlign: 'start'
+                  }}
                 >
                   {recommendedItineraries.map((itinerary, index) => {
                     const days = itinerary.days.length
@@ -95,20 +162,21 @@ export default function Home() {
                     return (
                       <div
                         key={index}
-                        className="w-full flex-shrink-0 px-2"
+                        className="w-[280px] flex-shrink-0"
+                        style={{ scrollSnapAlign: 'start' }}
                       >
                         <button
                           onClick={() => handleSelectRecommendation(itinerary)}
-                          className="w-full border-2 border-gray-300 p-6 md:p-8 hover:border-black hover:bg-gray-50 active:bg-gray-100 transition-all touch-manipulation"
+                          className="w-full bg-black text-white p-6 md:p-8 hover:bg-gray-800 active:bg-gray-900 transition-all touch-manipulation rounded-2xl"
                         >
                           <div className="text-center">
-                            <h3 className="text-2xl md:text-3xl font-bold mb-3">
+                            <h3 className="text-2xl md:text-3xl font-bold mb-3 text-white">
                               {days}일 여행
                             </h3>
-                            <div className="space-y-2 text-sm md:text-base text-gray-600">
+                            <div className="space-y-2 text-sm md:text-base text-white">
                               <p>{itinerary.city}</p>
                               <p>{month}월 {startDay}일 - {endDay}일</p>
-                              <p className="text-xs md:text-sm text-gray-500">
+                              <p className="text-xs md:text-sm text-gray-300">
                                 {totalActivities}개 활동
                               </p>
                             </div>
@@ -121,18 +189,18 @@ export default function Home() {
               </div>
               
               {/* 이전/다음 버튼 */}
-              {recommendedItineraries.length > 1 && (
+              {recommendedItineraries.length > itemsPerView && (
                 <>
                   <button
                     onClick={handlePrevious}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-4 bg-white border border-gray-300 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-gray-100 transition-colors touch-manipulation"
+                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-4 bg-white border border-gray-300 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-gray-100 transition-colors touch-manipulation z-10"
                     aria-label="이전"
                   >
                     ←
                   </button>
                   <button
                     onClick={handleNext}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-4 bg-white border border-gray-300 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-gray-100 transition-colors touch-manipulation"
+                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-4 bg-white border border-gray-300 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-gray-100 transition-colors touch-manipulation z-10"
                     aria-label="다음"
                   >
                     →
@@ -141,23 +209,37 @@ export default function Home() {
               )}
             </div>
             
-            {/* 인디케이터 */}
-            {recommendedItineraries.length > 1 && (
-              <div className="flex justify-center gap-2 mt-4">
-                {recommendedItineraries.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleDotClick(index)}
-                    className={`w-2 h-2 rounded-full transition-all touch-manipulation ${
-                      currentIndex === index
-                        ? 'bg-black w-6'
-                        : 'bg-gray-300'
-                    }`}
-                    aria-label={`${index + 1}번째 추천 일정`}
-                  />
-                ))}
-              </div>
-            )}
+            {/* 인디케이터 - 슬라이드 형태 */}
+            {recommendedItineraries.length > itemsPerView && (() => {
+              const totalSlides = Math.ceil(recommendedItineraries.length / itemsPerView)
+              const currentSlide = Math.floor(currentIndex / itemsPerView)
+              
+              return (
+                <div className="flex justify-center mt-4 w-full">
+                  <div 
+                    className="relative bg-gray-300 rounded-full h-1 cursor-pointer w-full"
+                    onClick={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect()
+                      const clickX = e.clientX - rect.left
+                      const slideWidth = rect.width / totalSlides
+                      const clickedSlide = Math.floor(clickX / slideWidth)
+                      if (clickedSlide >= 0 && clickedSlide < totalSlides) {
+                        const targetIndex = clickedSlide * itemsPerView
+                        handleDotClick(Math.min(targetIndex, recommendedItineraries.length - itemsPerView))
+                      }
+                    }}
+                  >
+                    <div
+                      className="absolute top-0 left-0 bg-black rounded-full h-1 transition-all duration-300 ease-in-out"
+                      style={{
+                        width: `${(1 / totalSlides) * 100}%`,
+                        transform: `translateX(${currentSlide * 100}%)`,
+                      }}
+                    />
+                  </div>
+                </div>
+              )
+            })()}
             
             {/* 온보딩 다시보기 버튼 */}
             <div className="mt-4 md:mt-6">
