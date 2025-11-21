@@ -13,6 +13,7 @@ export default function Home() {
   const { resetOnboarding, onboardingPreferences, onboardingCompleted, setItinerary, setPreferences } = useItineraryStore()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [itemsPerView, setItemsPerView] = useState(1)
+  const [isDesktop, setIsDesktop] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   
   useEffect(() => {
@@ -22,10 +23,13 @@ export default function Home() {
       // 모바일: 1개, 태블릿: 2개, 데스크톱: 3개
       if (width >= 1024) {
         setItemsPerView(3) // 데스크톱
+        setIsDesktop(true)
       } else if (width >= 768) {
         setItemsPerView(2) // 태블릿
+        setIsDesktop(true)
       } else {
         setItemsPerView(1) // 모바일
+        setIsDesktop(false)
       }
     }
     
@@ -134,18 +138,19 @@ export default function Home() {
             <h2 className="text-lg md:text-xl font-bold mb-4 md:mb-6">추천 일정</h2>
             
             {/* 캐러셀 - 스크롤 방식 */}
-            <div className="relative w-full">
+            <div className="relative w-full flex justify-center">
               <div 
                 ref={scrollContainerRef}
-                className="overflow-x-auto scrollbar-hide w-full"
+                className={`scrollbar-hide ${isDesktop ? 'overflow-x-visible' : 'overflow-x-auto'} ${isDesktop ? 'max-w-2xl' : ''}`}
                 style={{ 
-                  scrollSnapType: 'x mandatory',
+                  scrollSnapType: isDesktop ? 'none' : 'x mandatory',
                   scrollBehavior: 'smooth',
-                  WebkitOverflowScrolling: 'touch'
+                  WebkitOverflowScrolling: 'touch',
+                  width: isDesktop ? '100%' : '100%'
                 }}
               >
                 <div 
-                  className="flex gap-4"
+                  className={`flex gap-4 ${isDesktop ? '' : ''}`}
                   style={{ 
                     scrollSnapAlign: 'start'
                   }}
@@ -162,7 +167,7 @@ export default function Home() {
                     return (
                       <div
                         key={index}
-                        className="w-[280px] flex-shrink-0"
+                        className={isDesktop ? 'flex-1' : 'w-[280px] flex-shrink-0'}
                         style={{ scrollSnapAlign: 'start' }}
                       >
                         <button
@@ -188,19 +193,19 @@ export default function Home() {
                 </div>
               </div>
               
-              {/* 이전/다음 버튼 */}
-              {recommendedItineraries.length > itemsPerView && (
+              {/* 이전/다음 버튼 - 모바일에서 숨김 */}
+              {recommendedItineraries.length > itemsPerView && !isDesktop && (
                 <>
                   <button
                     onClick={handlePrevious}
-                    className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-4 bg-white border border-gray-300 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-gray-100 transition-colors touch-manipulation z-10"
+                    className="hidden md:block absolute left-0 top-1/2 -translate-y-1/2 -translate-x-2 md:-translate-x-4 bg-white border border-gray-300 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-gray-100 transition-colors touch-manipulation z-10"
                     aria-label="이전"
                   >
                     ←
                   </button>
                   <button
                     onClick={handleNext}
-                    className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-4 bg-white border border-gray-300 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-gray-100 transition-colors touch-manipulation z-10"
+                    className="hidden md:block absolute right-0 top-1/2 -translate-y-1/2 translate-x-2 md:translate-x-4 bg-white border border-gray-300 w-8 h-8 md:w-10 md:h-10 flex items-center justify-center hover:bg-gray-100 transition-colors touch-manipulation z-10"
                     aria-label="다음"
                   >
                     →
@@ -209,13 +214,13 @@ export default function Home() {
               )}
             </div>
             
-            {/* 인디케이터 - 슬라이드 형태 */}
-            {recommendedItineraries.length > itemsPerView && (() => {
+            {/* 인디케이터 - 슬라이드 형태 (모바일에서 숨김) */}
+            {recommendedItineraries.length > itemsPerView && !isDesktop && (() => {
               const totalSlides = Math.ceil(recommendedItineraries.length / itemsPerView)
               const currentSlide = Math.floor(currentIndex / itemsPerView)
               
               return (
-                <div className="flex justify-center mt-4 w-full">
+                <div className="hidden md:flex justify-center mt-4 w-full">
                   <div 
                     className="relative bg-gray-300 rounded-full h-1 cursor-pointer w-full"
                     onClick={(e) => {
