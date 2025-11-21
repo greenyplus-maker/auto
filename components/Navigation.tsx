@@ -16,6 +16,7 @@ const navItems: NavItem[] = [
   { href: '/plan/new', label: '새 일정', showWhen: 'always' },
   { href: '/plan', label: '일정 보기', showWhen: 'hasItinerary' },
   { href: '/plan/share', label: '공유', showWhen: 'hasItinerary' },
+  { href: '/saved', label: '저장된 일정', showWhen: 'always' },
   { href: '/spots/favorites', label: '관심 스팟', showWhen: 'always' },
 ]
 

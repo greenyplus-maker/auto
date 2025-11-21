@@ -9,9 +9,10 @@ import type { TravelStyle } from '@/types'
 
 export default function PlanPage() {
   const router = useRouter()
-  const { itinerary, preferences, setItinerary, updateItinerary } = useItineraryStore()
+  const { itinerary, preferences, setItinerary, updateItinerary, saveItinerary } = useItineraryStore()
   const [scheduleDensity, setScheduleDensity] = useState<TravelStyle>('normal')
   const [childFriendly, setChildFriendly] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
   
   useEffect(() => {
     if (!itinerary || !preferences) {
@@ -30,6 +31,16 @@ export default function PlanPage() {
     
     const newItinerary = generateItinerary(newPreferences)
     updateItinerary(newItinerary)
+  }
+
+  const handleSave = () => {
+    if (!itinerary) return
+    setIsSaving(true)
+    saveItinerary(itinerary)
+    setTimeout(() => {
+      setIsSaving(false)
+      alert('일정이 저장되었습니다.')
+    }, 300)
   }
   
   if (!itinerary || !preferences) {
@@ -88,8 +99,20 @@ export default function PlanPage() {
           </button>
         </div>
         
+        <div className="mb-6 md:mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg md:text-xl font-bold">일별 일정</h2>
+            <button
+              onClick={handleSave}
+              disabled={isSaving}
+              className="px-4 py-2 text-sm md:text-base border border-black hover:bg-black hover:text-white active:bg-gray-800 transition-colors touch-manipulation rounded-[8px] disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSaving ? '저장 중...' : '일정 저장'}
+            </button>
+          </div>
+        </div>
+
         <div className="space-y-3 md:space-y-4 mb-6 md:mb-8">
-          <h2 className="text-lg md:text-xl font-bold">일별 일정</h2>
           {itinerary.days.map((day) => (
             <Link
               key={day.index}

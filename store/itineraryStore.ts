@@ -15,6 +15,12 @@ interface OnboardingPreferences {
   city: string | null
 }
 
+interface SavedItinerary {
+  id: string
+  savedAt: string
+  itinerary: Itinerary
+}
+
 interface ItineraryState {
   itinerary: Itinerary | null
   preferences: TripPreferences | null
@@ -22,6 +28,7 @@ interface ItineraryState {
   showOnboarding: boolean
   onboardingPreferences: OnboardingPreferences | null
   favoritePlaces: Place[]
+  savedItineraries: SavedItinerary[]
   setPreferences: (preferences: TripPreferences) => void
   setItinerary: (itinerary: Itinerary) => void
   updateItinerary: (itinerary: Itinerary) => void
@@ -32,6 +39,9 @@ interface ItineraryState {
   addFavoritePlace: (place: Place) => void
   removeFavoritePlace: (placeId: string) => void
   isFavoritePlace: (placeId: string) => boolean
+  saveItinerary: (itinerary: Itinerary) => string
+  loadSavedItinerary: (id: string) => Itinerary | null
+  deleteSavedItinerary: (id: string) => void
 }
 
 export const useItineraryStore = create<ItineraryState>()(
@@ -43,6 +53,7 @@ export const useItineraryStore = create<ItineraryState>()(
       showOnboarding: false,
       onboardingPreferences: null,
       favoritePlaces: [],
+      savedItineraries: [],
       setPreferences: (preferences) => set({ preferences }),
       setItinerary: (itinerary) => set({ itinerary }),
       updateItinerary: (itinerary) => set({ itinerary }),
@@ -63,6 +74,30 @@ export const useItineraryStore = create<ItineraryState>()(
       isFavoritePlace: (placeId) => {
         const { favoritePlaces } = get()
         return favoritePlaces.some((p) => p.id === placeId)
+      },
+      saveItinerary: (itinerary) => {
+        const { savedItineraries } = get()
+        const id = `saved-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+        const savedItinerary: SavedItinerary = {
+          id,
+          savedAt: new Date().toISOString(),
+          itinerary,
+        }
+        set({ savedItineraries: [savedItinerary, ...savedItineraries] })
+        return id
+      },
+      loadSavedItinerary: (id) => {
+        const { savedItineraries } = get()
+        const saved = savedItineraries.find((si) => si.id === id)
+        if (saved) {
+          set({ itinerary: saved.itinerary, preferences: saved.itinerary.preferences })
+          return saved.itinerary
+        }
+        return null
+      },
+      deleteSavedItinerary: (id) => {
+        const { savedItineraries } = get()
+        set({ savedItineraries: savedItineraries.filter((si) => si.id !== id) })
       },
     }),
     {
