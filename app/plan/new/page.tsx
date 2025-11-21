@@ -13,7 +13,7 @@ const travelGroupTypes = [
   { value: 'parents', label: '효도', adults: 2, children: 0, allowChildren: false, minAdults: 2, maxAdults: 4 },
 ] as const
 
-const cities = ['도쿄', '오사카', '교토', '후쿠오카', '홋카이도', '오키나와', '아직 정하지 않음']
+const cities = ['도쿄', '오사카', '교토', '후쿠오카', '홋카이도', '오키나와', '다카마쓰', '아직 정하지 않음']
 const interests = [
   { value: 'cafe', label: '카페' },
   { value: 'restaurant', label: '맛집' },

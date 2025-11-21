@@ -298,6 +298,60 @@ export const mockPlaces: Record<string, Place[]> = {
       description: '미국 문화가 느껴지는 쇼핑 거리로, 독특한 분위기를 즐길 수 있습니다.',
     },
   ],
+  takamatsu: [
+    {
+      id: 'takamatsu-1',
+      name: '리츠린 공원',
+      category: 'nature',
+      area: '다카마쓰',
+      description: '일본 3대 정원 중 하나로, 아름다운 연못과 정원을 감상할 수 있습니다.',
+      latitude: 34.3308,
+      longitude: 134.0444,
+    },
+    {
+      id: 'takamatsu-2',
+      name: '다카마쓰 성',
+      category: 'museum',
+      area: '다카마쓰',
+      description: '시코쿠 지역의 대표적인 성으로, 역사와 문화를 체험할 수 있습니다.',
+      latitude: 34.3503,
+      longitude: 134.0500,
+    },
+    {
+      id: 'takamatsu-3',
+      name: '시코쿠무라',
+      category: 'museum',
+      area: '야시마',
+      description: '시코쿠의 전통 건축물을 모은 야외 박물관으로, 옛 일본의 모습을 볼 수 있습니다.',
+      latitude: 34.3389,
+      longitude: 134.1000,
+    },
+    {
+      id: 'takamatsu-4',
+      name: '야시마',
+      category: 'nature',
+      area: '야시마',
+      description: '다카마쓰만을 내려다볼 수 있는 언덕으로, 아름다운 전망을 즐길 수 있습니다.',
+      latitude: 34.3389,
+      longitude: 134.1000,
+    },
+    {
+      id: 'takamatsu-5',
+      name: '우동 키타하마',
+      category: 'restaurant',
+      area: '다카마쓰',
+      description: '시코쿠의 대표 음식인 우동을 맛볼 수 있는 유명 식당입니다.',
+    },
+    {
+      id: 'takamatsu-6',
+      name: '오타루시마',
+      category: 'nature',
+      area: '오타루시마',
+      description: '올리브와 올리브 오일로 유명한 아름다운 섬입니다.',
+      latitude: 34.5000,
+      longitude: 134.2333,
+    },
+  ],
 }
 
 export function getPlacesByCity(city: string): Place[] {
@@ -314,6 +368,8 @@ export function getPlacesByCity(city: string): Place[] {
     return mockPlaces.hokkaido
   } else if (cityKey.includes('okinawa') || cityKey.includes('오키나와') || cityKey.includes('오끼나와') || cityKey.includes('류큐')) {
     return mockPlaces.okinawa
+  } else if (cityKey.includes('takamatsu') || cityKey.includes('다카마쓰') || cityKey.includes('다카마스') || cityKey.includes('고송')) {
+    return mockPlaces.takamatsu
   }
   // 기본값으로 도쿄 장소 반환
   return mockPlaces.tokyo
@@ -349,6 +405,9 @@ export function getPopularJapanSpots(): Place[] {
     mockPlaces.okinawa[0], // 슈리 성
     mockPlaces.okinawa[1], // 아쿠아리움 츄라우미
     mockPlaces.okinawa[2], // 만자모 해변
+    // 다카마쓰
+    mockPlaces.takamatsu[0], // 리츠린 공원
+    mockPlaces.takamatsu[1], // 다카마쓰 성
   ]
 }
 

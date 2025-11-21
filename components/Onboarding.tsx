@@ -32,7 +32,7 @@ const interests = [
   { value: 'nature', label: '자연/공원' },
 ]
 
-const cities = ['도쿄', '오사카', '교토', '후쿠오카', '홋카이도', '오키나와', '아직 정하지 않음']
+const cities = ['도쿄', '오사카', '교토', '후쿠오카', '홋카이도', '오키나와', '다카마쓰', '아직 정하지 않음']
 
 export function Onboarding() {
   const router = useRouter()
