@@ -8,6 +8,7 @@ interface OnboardingPreferences {
   adults: number
   children: number
   childAgeGroups: string[] | null
+  groupType: string | null
   city: string | null
 }
 
@@ -56,6 +57,7 @@ export function generateRecommendedItineraries(
       childAgeGroups: onboardingPrefs.childAgeGroups && onboardingPrefs.childAgeGroups.length > 0
         ? (onboardingPrefs.childAgeGroups as any)
         : onboardingPrefs.children > 0 ? Array(onboardingPrefs.children).fill('6to12') : [],
+      groupType: (onboardingPrefs.groupType as any) || '',
       style: onboardingPrefs.style as any,
       interests: onboardingPrefs.interests || [],
       budget: onboardingPrefs.budget as any,
