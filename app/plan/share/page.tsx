@@ -90,20 +90,26 @@ export default function SharePage() {
           <p className="text-sm md:text-base text-gray-600">일정을 텍스트로 복사하여 공유하세요.</p>
         </div>
         
-        <div className="mb-6">
-          <button
-            onClick={handleCopy}
-            className="w-full md:w-auto border-2 border-black px-6 py-3 md:py-2 text-base md:text-sm font-medium hover:bg-black hover:text-white active:bg-gray-800 transition-colors touch-manipulation"
-          >
-            {copied ? '복사됨!' : '클립보드에 복사'}
-          </button>
-        </div>
-        
-        <div className="border border-gray-300 p-4 md:p-6 bg-gray-50 overflow-x-auto">
+        <div className="border border-gray-300 p-4 md:p-6 bg-gray-50 overflow-x-auto mb-20 md:mb-24">
           <pre className="whitespace-pre-wrap text-xs md:text-sm font-mono text-gray-800 leading-relaxed">
             {textContent}
           </pre>
         </div>
+        
+        {/* 플로팅 CTA 버튼 */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 p-4 md:p-6 z-50">
+          <div className="max-w-3xl mx-auto">
+            <button
+              onClick={handleCopy}
+              className="w-full bg-black text-white px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-gray-800 active:bg-gray-900 transition-colors touch-manipulation rounded-lg"
+            >
+              {copied ? '복사됨!' : '클립보드에 복사'}
+            </button>
+          </div>
+        </div>
+        
+        {/* 플로팅 버튼 공간 확보 */}
+        <div className="h-20 md:h-24" />
       </div>
     </main>
   )

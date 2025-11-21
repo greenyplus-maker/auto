@@ -196,3 +196,20 @@ export function getPlacesByInterests(places: Place[], interests: string[]): Plac
   return places.filter((place) => interests.includes(place.category))
 }
 
+// 일본 유명 스팟 (각 도시의 대표 스팟)
+export function getPopularJapanSpots(): Place[] {
+  return [
+    // 도쿄
+    mockPlaces.tokyo[0], // 시부야 스크램블 교차로
+    mockPlaces.tokyo[2], // 센소지
+    mockPlaces.tokyo[8], // 도쿄 스카이트리
+    // 오사카
+    mockPlaces.osaka[0], // 오사카 성
+    mockPlaces.osaka[1], // 도톤보리
+    // 교토
+    mockPlaces.kyoto[0], // 후시미 이나리 신사
+    mockPlaces.kyoto[1], // 기요미즈데라
+    mockPlaces.kyoto[2], // 아라시야마
+  ]
+}
+

@@ -74,7 +74,7 @@ export default function NewPlanPage() {
           <p className="text-sm md:text-base text-gray-600">일정 생성을 위한 정보를 입력해주세요.</p>
         </div>
         
-        <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
+        <form id="plan-form" onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
           <div>
             <label className="block text-sm md:text-base font-medium mb-2 md:mb-3">도시/지역 *</label>
             <select
@@ -195,15 +195,23 @@ export default function NewPlanPage() {
             </select>
           </div>
           
-          <div className="pt-4 md:pt-6 border-t border-gray-300">
+        </form>
+        
+        {/* 플로팅 CTA 버튼 */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 p-4 md:p-6 z-50">
+          <div className="max-w-2xl mx-auto">
             <button
               type="submit"
-              className="w-full border-2 border-black px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-black hover:text-white active:bg-gray-800 transition-colors touch-manipulation"
+              form="plan-form"
+              className="w-full bg-black text-white px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-gray-800 active:bg-gray-900 transition-colors touch-manipulation rounded-lg"
             >
               일정 생성하기
             </button>
           </div>
-        </form>
+        </div>
+        
+        {/* 플로팅 버튼 공간 확보 */}
+        <div className="h-20 md:h-24" />
       </div>
     </main>
   )

@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useItineraryStore } from '@/store/itineraryStore'
 import { generateRecommendedItineraries } from '@/lib/recommendedItineraries'
+import { getPlacesByCity, getPopularJapanSpots } from '@/lib/mockData'
+import type { Place } from '@/types'
 
 export default function Home() {
   const router = useRouter()
@@ -17,6 +19,23 @@ export default function Home() {
     }
     return generateRecommendedItineraries(onboardingPreferences)
   }, [onboardingPreferences, onboardingCompleted])
+  
+  // 관광 스팟 목록 (선호 도시가 있으면 해당 도시, 없으면 일본 유명 스팟)
+  const touristSpots = useMemo(() => {
+    if (!onboardingCompleted) {
+      return []
+    }
+    
+    if (onboardingPreferences?.city) {
+      return getPlacesByCity(onboardingPreferences.city).slice(0, 6) // 상위 6개만 표시
+    }
+    
+    return getPopularJapanSpots()
+  }, [onboardingPreferences, onboardingCompleted])
+  
+  const handleSpotClick = (place: Place) => {
+    router.push(`/place/${place.id}`)
+  }
   
   const handleShowOnboarding = () => {
     resetOnboarding()
@@ -139,30 +158,72 @@ export default function Home() {
                 ))}
               </div>
             )}
+            
+            {/* 온보딩 다시보기 버튼 */}
+            <div className="mt-4 md:mt-6">
+              <button
+                onClick={handleShowOnboarding}
+                className="block w-full text-center border border-gray-400 px-6 py-3 md:py-2 text-sm md:text-sm font-medium hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation text-gray-600"
+              >
+                온보딩 다시보기
+              </button>
+            </div>
           </div>
         )}
         
-        <div className="space-y-4 md:space-y-6">
-          {recommendedItineraries.length === 0 && (
-            <p className="text-sm md:text-base text-gray-600">
+        {/* 관광 스팟 섹션 */}
+        {touristSpots.length > 0 && (
+          <div className="mb-8 md:mb-10">
+            <h2 className="text-lg md:text-xl font-bold mb-4 md:mb-6">
+              {onboardingPreferences?.city ? `${onboardingPreferences.city} 관광 스팟` : '일본 유명 스팟'}
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+              {touristSpots.map((spot) => (
+                <button
+                  key={spot.id}
+                  onClick={() => handleSpotClick(spot)}
+                  className="text-left border border-gray-300 p-4 md:p-5 hover:border-black hover:bg-gray-50 active:bg-gray-100 transition-all touch-manipulation"
+                >
+                  <h3 className="font-semibold text-base md:text-lg mb-2">{spot.name}</h3>
+                  <p className="text-xs md:text-sm text-gray-500 mb-2">{spot.area}</p>
+                  <p className="text-sm md:text-base text-gray-700 line-clamp-2 leading-relaxed">
+                    {spot.description}
+                  </p>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {recommendedItineraries.length === 0 && (
+          <div className="mb-8 md:mb-10">
+            <p className="text-sm md:text-base text-gray-600 mb-4">
               간단한 몇 가지 질문에 답하시면 됩니다.
             </p>
-          )}
-          
-          <Link
-            href="/plan/new"
-            className="block w-full text-center border-2 border-black px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-black hover:text-white active:bg-gray-800 transition-colors touch-manipulation"
-          >
-            일정 만들기 시작하기
-          </Link>
-          
-          <button
-            onClick={handleShowOnboarding}
-            className="block w-full text-center border border-gray-400 px-6 py-3 md:py-2 text-sm md:text-sm font-medium hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation text-gray-600"
-          >
-            온보딩 다시보기
-          </button>
+            <button
+              onClick={handleShowOnboarding}
+              className="block w-full text-center border border-gray-400 px-6 py-3 md:py-2 text-sm md:text-sm font-medium hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation text-gray-600"
+            >
+              온보딩 다시보기
+            </button>
+          </div>
+        )}
+        
+        {/* 플로팅 CTA 버튼 */}
+        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 p-4 md:p-6 z-50">
+          <div className="max-w-2xl mx-auto">
+            <Link
+              href="/plan/new"
+              className="block w-full text-center bg-black text-white px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-gray-800 active:bg-gray-900 transition-colors touch-manipulation rounded-lg"
+            >
+              일정 만들기 시작하기
+            </Link>
+          </div>
         </div>
+        
+        {/* 플로팅 버튼 공간 확보 */}
+        <div className="h-20 md:h-24" />
       </div>
     </main>
   )

@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from 'next/navigation'
 import { useItineraryStore } from '@/store/itineraryStore'
-import { mockPlaces, getPlacesByCity } from '@/lib/mockData'
+import { mockPlaces, getPlacesByCity, getPopularJapanSpots } from '@/lib/mockData'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { BackButton } from '@/components/BackButton'
 import type { PlaceCategory } from '@/types'
@@ -10,19 +10,32 @@ import type { PlaceCategory } from '@/types'
 export default function PlaceDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { itinerary, updateItinerary } = useItineraryStore()
+  const { itinerary, updateItinerary, onboardingPreferences } = useItineraryStore()
   const placeId = params.placeId as string
   
-  if (!itinerary) {
-    router.push('/plan')
-    return null
+  // 모든 장소 목록에서 찾기 (itinerary가 없어도 작동)
+  let allPlaces: typeof mockPlaces.tokyo = []
+  if (itinerary) {
+    allPlaces = getPlacesByCity(itinerary.city)
+  } else if (onboardingPreferences?.city) {
+    allPlaces = getPlacesByCity(onboardingPreferences.city)
+  } else {
+    // itinerary도 없고 선호 도시도 없으면 모든 유명 스팟에서 찾기
+    allPlaces = getPopularJapanSpots()
   }
   
-  const allPlaces = getPlacesByCity(itinerary.city)
-  const place = allPlaces.find((p) => p.id === placeId)
+  // 모든 도시의 장소를 합쳐서 찾기
+  const allCitiesPlaces = [
+    ...mockPlaces.tokyo,
+    ...mockPlaces.osaka,
+    ...mockPlaces.kyoto,
+    ...mockPlaces.fukuoka,
+  ]
+  
+  const place = allCitiesPlaces.find((p) => p.id === placeId)
   
   if (!place) {
-    router.push('/plan')
+    router.push('/')
     return null
   }
   
@@ -76,10 +89,10 @@ export default function PlaceDetailPage() {
   return (
     <main className="min-h-screen p-4 md:p-8">
       <div className="max-w-2xl mx-auto">
-        <BackButton href="/plan" label="일정 보기로" />
+        <BackButton href={itinerary ? "/plan" : "/"} label={itinerary ? "일정 보기로" : "홈으로"} />
         <Breadcrumb
           items={[
-            { label: '일정 보기', href: '/plan' },
+            ...(itinerary ? [{ label: '일정 보기', href: '/plan' }] : []),
             { label: place.name },
           ]}
         />
@@ -105,24 +118,26 @@ export default function PlaceDetailPage() {
             <h2 className="font-semibold text-base md:text-lg mb-3 md:mb-4">추천 이유</h2>
             <p className="text-sm md:text-base text-gray-700 leading-relaxed">
               이 장소는 {categoryLabels[place.category]} 카테고리에 속하며, {place.area} 지역의 대표적인 관광지입니다.
-              여행 스타일에 맞춰 일정에 포함되었습니다.
+              {itinerary ? ' 여행 스타일에 맞춰 일정에 포함되었습니다.' : ' 일본 여행에서 꼭 방문해볼 만한 곳입니다.'}
             </p>
           </div>
           
-          <div className="flex flex-col md:flex-row gap-3 md:gap-4 pt-4 md:pt-6 border-t border-gray-300">
-            <button
-              onClick={handleRemoveFromItinerary}
-              className="flex-1 border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-sm hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
-            >
-              일정에서 제거
-            </button>
-            <button
-              onClick={handleSwapWithSimilar}
-              className="flex-1 border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-sm hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
-            >
-              유사한 장소로 교체
-            </button>
-          </div>
+          {itinerary && (
+            <div className="flex flex-col md:flex-row gap-3 md:gap-4 pt-4 md:pt-6 border-t border-gray-300">
+              <button
+                onClick={handleRemoveFromItinerary}
+                className="flex-1 border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-sm hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
+              >
+                일정에서 제거
+              </button>
+              <button
+                onClick={handleSwapWithSimilar}
+                className="flex-1 border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-sm hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
+              >
+                유사한 장소로 교체
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </main>
