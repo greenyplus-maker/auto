@@ -421,11 +421,11 @@ export function EditItineraryModal({ isOpen, onClose, initialPreferences, onSave
                       </div>
                     </div>
                     
-                    {formData.children > 0 && (
+                    {(formData.children || 0) > 0 && (
                       <div>
                         <label className="block text-xs md:text-sm text-gray-600 mb-2">아이 연령대</label>
                         <div className="space-y-3">
-                          {Array.from({ length: formData.children }).map((_, index) => {
+                          {Array.from({ length: formData.children || 0 }).map((_, index) => {
                             const currentAgeGroups = formData.childAgeGroups || []
                             const currentAgeGroup = currentAgeGroups[index] || '6to12'
                             return (
