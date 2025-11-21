@@ -383,9 +383,9 @@ export function Onboarding() {
   const isLastStep = currentStep === 5
   
   return (
-    <div className="fixed inset-0 z-50 bg-white flex items-center justify-center p-4 overflow-y-auto">
-      <div className="max-w-md w-full my-auto">
-        <div className="border border-gray-300 bg-white p-6 md:p-8">
+    <div className="fixed inset-0 z-50 bg-white flex items-center justify-center overflow-y-auto">
+      <div className="max-w-[600px] w-full my-auto px-6">
+        <div className="bg-white">
           {/* 진행 표시 */}
           <div className="mb-6">
             <div className="flex justify-between items-center mb-2">
