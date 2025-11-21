@@ -51,11 +51,6 @@ export function GoogleMapComponent({
     setIsLoaded(true)
   }, [])
 
-  const handleMapError = useCallback(() => {
-    setMapError('지도를 표시하는 중 오류가 발생했습니다.')
-    setIsLoaded(false)
-  }, [])
-
   if (!apiKey || apiKey === 'your_api_key_here') {
     return (
       <div 
@@ -121,7 +116,6 @@ export function GoogleMapComponent({
               fullscreenControl: true,
             }}
             onLoad={handleMapLoad}
-            onError={handleMapError}
           >
             <Marker
               position={center}
