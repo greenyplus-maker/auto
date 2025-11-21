@@ -1,6 +1,6 @@
 'use client'
 
-import { useMemo } from 'react'
+import { useMemo, useState, useCallback } from 'react'
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api'
 
 interface GoogleMapProps {
@@ -15,11 +15,6 @@ const mapContainerStyle = {
   height: '400px',
 }
 
-const defaultCenter = {
-  lat: 35.6762,
-  lng: 139.6503, // 도쿄 기본 위치
-}
-
 export function GoogleMapComponent({ 
   latitude, 
   longitude, 
@@ -27,6 +22,8 @@ export function GoogleMapComponent({
   height = '400px'
 }: GoogleMapProps) {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+  const [mapError, setMapError] = useState<string | null>(null)
+  const [isLoaded, setIsLoaded] = useState(false)
   
   const center = useMemo(() => ({
     lat: latitude,
@@ -38,10 +35,31 @@ export function GoogleMapComponent({
     height,
   }), [height])
 
+  const handleLoadError = useCallback((error: Error) => {
+    console.error('Google Maps API 로드 오류:', error)
+    const errorMessage = error.message || String(error)
+    if (errorMessage.includes('RefererNotAllowedMapError')) {
+      setMapError('API 키에 localhost가 허용되지 않았습니다. Google Cloud Console에서 HTTP 리퍼러에 http://localhost:3001/* 를 추가해주세요.')
+    } else {
+      setMapError('Google 지도가 제대로 로드되지 않았습니다. API 키 설정을 확인해주세요.')
+    }
+    setIsLoaded(false)
+  }, [])
+
+  const handleMapLoad = useCallback(() => {
+    setMapError(null)
+    setIsLoaded(true)
+  }, [])
+
+  const handleMapError = useCallback(() => {
+    setMapError('지도를 표시하는 중 오류가 발생했습니다.')
+    setIsLoaded(false)
+  }, [])
+
   if (!apiKey || apiKey === 'your_api_key_here') {
     return (
       <div 
-        className="w-full bg-gray-100 border border-gray-300 flex items-center justify-center text-gray-600"
+        className="w-full bg-gray-100 border border-gray-300 flex items-center justify-center text-gray-600 rounded-[8px]"
         style={{ height }}
       >
         <div className="text-center p-4">
@@ -55,25 +73,64 @@ export function GoogleMapComponent({
   }
 
   return (
-    <LoadScript googleMapsApiKey={apiKey}>
-      <GoogleMap
-        mapContainerStyle={mapStyle}
-        center={center}
-        zoom={15}
-        options={{
-          disableDefaultUI: false,
-          zoomControl: true,
-          streetViewControl: false,
-          mapTypeControl: false,
-          fullscreenControl: true,
-        }}
+    <div className="w-full" style={{ height }}>
+      <LoadScript 
+        googleMapsApiKey={apiKey}
+        loadingElement={
+          <div 
+            className="w-full bg-gray-100 border border-gray-300 flex items-center justify-center text-gray-600 rounded-[8px]"
+            style={{ height }}
+          >
+            <div className="text-center p-4">
+              <p className="text-sm md:text-base">지도를 불러오는 중...</p>
+            </div>
+          </div>
+        }
+        onLoad={() => setIsLoaded(true)}
+        onError={handleLoadError}
       >
-        <Marker
-          position={center}
-          title={placeName}
-        />
-      </GoogleMap>
-    </LoadScript>
+        {mapError ? (
+          <div 
+            className="w-full bg-gray-100 border border-gray-300 flex items-center justify-center text-gray-600 rounded-[8px]"
+            style={{ height }}
+          >
+            <div className="text-center p-4">
+              <p className="text-sm md:text-base mb-2 font-semibold">{mapError}</p>
+              <div className="text-xs md:text-sm text-gray-500 mt-3 space-y-1">
+                <p>해결 방법:</p>
+                <ol className="list-decimal list-inside text-left space-y-1 mt-2">
+                  <li>Google Cloud Console → API 및 서비스 → 사용자 인증 정보</li>
+                  <li>API 키 클릭 → 애플리케이션 제한사항</li>
+                  <li>HTTP 리퍼러(웹사이트) 선택</li>
+                  <li>다음 URL 추가: <code className="bg-gray-200 px-1 rounded">http://localhost:3001/*</code></li>
+                  <li>저장 후 브라우저 완전 새로고침 (Cmd+Shift+R)</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <GoogleMap
+            mapContainerStyle={mapStyle}
+            center={center}
+            zoom={15}
+            options={{
+              disableDefaultUI: false,
+              zoomControl: true,
+              streetViewControl: false,
+              mapTypeControl: false,
+              fullscreenControl: true,
+            }}
+            onLoad={handleMapLoad}
+            onError={handleMapError}
+          >
+            <Marker
+              position={center}
+              title={placeName}
+            />
+          </GoogleMap>
+        )}
+      </LoadScript>
+    </div>
   )
 }
 

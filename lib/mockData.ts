@@ -17,6 +17,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'shopping',
       area: '하라주쿠',
       description: '일본 젊은이들의 문화를 체험할 수 있는 번화가로, 독특한 패션과 음식을 즐길 수 있습니다.',
+      latitude: 35.6702,
+      longitude: 139.7026,
     },
     {
       id: 'tokyo-3',
@@ -24,6 +26,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'museum',
       area: '아사쿠사',
       description: '도쿄에서 가장 오래된 절로, 전통적인 일본 문화를 경험할 수 있는 곳입니다.',
+      latitude: 35.7148,
+      longitude: 139.7967,
     },
     {
       id: 'tokyo-4',
@@ -66,6 +70,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'other',
       area: '스미다',
       description: '도쿄의 랜드마크 타워로, 전망대에서 도시 전경을 감상할 수 있습니다.',
+      latitude: 35.7101,
+      longitude: 139.8107,
     },
     {
       id: 'tokyo-10',
@@ -73,6 +79,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'themePark',
       area: '우라야스',
       description: '세계에서 가장 인기 있는 테마파크 중 하나로, 가족 모두가 즐길 수 있습니다.',
+      latitude: 35.6329,
+      longitude: 139.8804,
     },
   ],
   osaka: [
@@ -82,6 +90,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'museum',
       area: '오사카',
       description: '일본의 대표적인 성 중 하나로, 역사와 아름다운 건축을 감상할 수 있습니다.',
+      latitude: 34.6873,
+      longitude: 135.5259,
     },
     {
       id: 'osaka-2',
@@ -89,6 +99,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'other',
       area: '난바',
       description: '오사카의 대표적인 번화가로, 네온사인과 맛집이 가득한 거리입니다.',
+      latitude: 34.6698,
+      longitude: 135.5019,
     },
     {
       id: 'osaka-3',
@@ -96,6 +108,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'other',
       area: '우메다',
       description: '공중정원에서 오사카 시내를 한눈에 볼 수 있는 전망대입니다.',
+      latitude: 34.7050,
+      longitude: 135.4903,
     },
     {
       id: 'osaka-4',
@@ -119,6 +133,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'other',
       area: '후시미',
       description: '수천 개의 주황색 토리이로 유명한 신사로, 일본의 대표적인 관광지입니다.',
+      latitude: 34.9671,
+      longitude: 135.7727,
     },
     {
       id: 'kyoto-2',
@@ -126,6 +142,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'museum',
       area: '히가시야마',
       description: '유네스코 세계문화유산으로 지정된 절로, 아름다운 전통 건축을 볼 수 있습니다.',
+      latitude: 34.9949,
+      longitude: 135.7850,
     },
     {
       id: 'kyoto-3',
@@ -133,6 +151,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'nature',
       area: '아라시야마',
       description: '대나무 숲과 전통 마을이 어우러진 아름다운 자연 경관을 즐길 수 있습니다.',
+      latitude: 35.0094,
+      longitude: 135.6775,
     },
     {
       id: 'kyoto-4',
@@ -156,6 +176,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'restaurant',
       area: '하카타',
       description: '후쿠오카의 대표 음식인 돈코츠 라멘을 맛볼 수 있는 식당입니다.',
+      latitude: 33.5904,
+      longitude: 130.4017,
     },
     {
       id: 'fukuoka-2',
@@ -163,6 +185,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'nature',
       area: '주오',
       description: '도심 속 호수를 중심으로 한 아름다운 공원입니다.',
+      latitude: 33.5898,
+      longitude: 130.3756,
     },
     {
       id: 'fukuoka-3',
@@ -170,6 +194,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'other',
       area: '모모치',
       description: '후쿠오카의 랜드마크 타워로, 야경이 특히 아름답습니다.',
+      latitude: 33.5931,
+      longitude: 130.3515,
     },
   ],
   hokkaido: [
@@ -179,6 +205,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'other',
       area: '삿포로',
       description: '삿포로 맥주의 역사를 체험할 수 있는 박물관과 맥주 정원입니다.',
+      latitude: 43.0642,
+      longitude: 141.3469,
     },
     {
       id: 'hokkaido-2',
@@ -186,6 +214,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'nature',
       area: '오타루',
       description: '석유 램프로 아름답게 장식된 운하로, 낭만적인 분위기를 즐길 수 있습니다.',
+      latitude: 43.1907,
+      longitude: 140.9947,
     },
     {
       id: 'hokkaido-3',
@@ -193,6 +223,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'nature',
       area: '후라노',
       description: '여름에는 라벤더와 다양한 꽃으로 가득한 아름다운 꽃밭입니다.',
+      latitude: 43.3428,
+      longitude: 142.3848,
     },
     {
       id: 'hokkaido-4',
@@ -223,6 +255,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'museum',
       area: '나하',
       description: '유네스코 세계문화유산으로 지정된 류큐 왕국의 성입니다.',
+      latitude: 26.2172,
+      longitude: 127.7193,
     },
     {
       id: 'okinawa-2',
@@ -230,6 +264,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'other',
       area: '모토부',
       description: '세계 최대 규모의 수조를 가진 아쿠아리움으로, 거대한 고래상어를 볼 수 있습니다.',
+      latitude: 26.6944,
+      longitude: 127.8776,
     },
     {
       id: 'okinawa-3',
@@ -237,6 +273,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'nature',
       area: '나고',
       description: '에메랄드 빛 바다와 하얀 모래사장이 아름다운 해변입니다.',
+      latitude: 26.5044,
+      longitude: 127.8575,
     },
     {
       id: 'okinawa-4',
