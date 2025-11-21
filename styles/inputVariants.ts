@@ -7,14 +7,14 @@ export const inputVariants = {
   default: {
     base: 'w-full border border-gray-400 bg-white text-base md:text-sm touch-manipulation',
     size: 'h-10 px-4', // 높이 40px (h-10 = 2.5rem = 40px)
-    radius: 'rounded-[4px]',
+    radius: 'rounded-[8px]',
     focus: 'focus:outline-none focus:border-black',
     disabled: 'disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed',
   },
   textarea: {
     base: 'w-full border border-gray-400 bg-white text-base md:text-sm touch-manipulation resize-none',
     size: 'min-h-[100px] px-4 py-3',
-    radius: 'rounded-[4px]',
+    radius: 'rounded-[8px]',
     focus: 'focus:outline-none focus:border-black',
     disabled: 'disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed',
   },

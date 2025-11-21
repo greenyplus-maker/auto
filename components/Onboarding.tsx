@@ -11,7 +11,7 @@ interface OnboardingPreferences {
   budget: Budget | null
   adults: number
   children: number
-  childAgeGroup: ChildAgeGroup | null
+  childAgeGroups: ChildAgeGroup[] | null
   city: string | null
 }
 
@@ -38,7 +38,7 @@ export function Onboarding() {
     budget: null,
     adults: 2,
     children: 0,
-    childAgeGroup: null,
+    childAgeGroups: null,
     city: null,
   })
   
@@ -114,7 +114,7 @@ export function Onboarding() {
                 <button
                   key={style}
                   onClick={() => setPreferences({ ...preferences, style })}
-                  className={`w-full text-left border-2 p-4 transition-colors touch-manipulation ${
+                  className={`w-full text-left border-2 p-4 transition-colors touch-manipulation rounded-[8px] ${
                     preferences.style === style
                       ? 'border-black bg-black text-white'
                       : 'border-gray-300 hover:border-gray-400'
@@ -147,7 +147,7 @@ export function Onboarding() {
                 <button
                   key={interest.value}
                   onClick={() => handleInterestToggle(interest.value)}
-                  className={`border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation ${
+                  className={`border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation rounded-[8px] ${
                     preferences.interests.includes(interest.value)
                       ? 'border-black bg-black text-white'
                       : 'border-gray-300 hover:border-gray-400'
@@ -171,7 +171,7 @@ export function Onboarding() {
                 <button
                   key={budget}
                   onClick={() => setPreferences({ ...preferences, budget })}
-                  className={`w-full text-left border-2 p-4 transition-colors touch-manipulation ${
+                  className={`w-full text-left border-2 p-4 transition-colors touch-manipulation rounded-[8px] ${
                     preferences.budget === budget
                       ? 'border-black bg-black text-white'
                       : 'border-gray-300 hover:border-gray-400'
@@ -206,7 +206,7 @@ export function Onboarding() {
                   <button
                     key={num}
                     onClick={() => setPreferences({ ...preferences, adults: num })}
-                    className={`flex-1 border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation ${
+                    className={`flex-1 border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation rounded-[8px] ${
                       preferences.adults === num
                         ? 'border-black bg-black text-white'
                         : 'border-gray-300 hover:border-gray-400'
@@ -223,8 +223,13 @@ export function Onboarding() {
                 {[0, 1, 2, 3].map((num) => (
                   <button
                     key={num}
-                    onClick={() => setPreferences({ ...preferences, children: num, childAgeGroup: num > 0 ? preferences.childAgeGroup || '6to12' : null })}
-                    className={`flex-1 border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation ${
+                    onClick={() => {
+                      const newAgeGroups = num > 0 
+                        ? Array(num).fill('6to12' as ChildAgeGroup)
+                        : null
+                      setPreferences({ ...preferences, children: num, childAgeGroups: newAgeGroups })
+                    }}
+                    className={`flex-1 border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation rounded-[8px] ${
                       preferences.children === num
                         ? 'border-black bg-black text-white'
                         : 'border-gray-300 hover:border-gray-400'
@@ -238,20 +243,38 @@ export function Onboarding() {
             {preferences.children > 0 && (
               <div>
                 <label className="block text-sm md:text-base font-medium mb-2">아이 연령대</label>
-                <div className="space-y-2">
-                  {(['under6', '6to12', '13plus'] as ChildAgeGroup[]).map((ageGroup) => (
-                    <button
-                      key={ageGroup}
-                      onClick={() => setPreferences({ ...preferences, childAgeGroup: ageGroup })}
-                      className={`w-full text-left border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation ${
-                        preferences.childAgeGroup === ageGroup
-                          ? 'border-black bg-black text-white'
-                          : 'border-gray-300 hover:border-gray-400'
-                      }`}
-                    >
-                      {ageGroup === 'under6' ? '6세 미만' : ageGroup === '6to12' ? '6-12세' : '13세 이상'}
-                    </button>
-                  ))}
+                <div className="space-y-3">
+                  {Array.from({ length: preferences.children }).map((_, index) => {
+                    const currentAgeGroups = preferences.childAgeGroups || []
+                    const currentAgeGroup = currentAgeGroups[index] || '6to12'
+                    return (
+                      <div key={index}>
+                        <label className="block text-xs md:text-sm text-gray-600 mb-2">
+                          {index + 1}번째 아이
+                        </label>
+                        <div className="space-y-2">
+                          {(['under6', '6to12', '13plus'] as ChildAgeGroup[]).map((ageGroup) => (
+                            <button
+                              key={ageGroup}
+                              type="button"
+                              onClick={() => {
+                                const newAgeGroups = [...(preferences.childAgeGroups || [])]
+                                newAgeGroups[index] = ageGroup
+                                setPreferences({ ...preferences, childAgeGroups: newAgeGroups })
+                              }}
+                              className={`w-full text-left border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation rounded-[8px] ${
+                                currentAgeGroup === ageGroup
+                                  ? 'border-black bg-black text-white'
+                                  : 'border-gray-300 hover:border-gray-400'
+                              }`}
+                            >
+                              {ageGroup === 'under6' ? '6세 미만' : ageGroup === '6to12' ? '6-12세' : '13세 이상'}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
             )}
@@ -269,7 +292,7 @@ export function Onboarding() {
                 <button
                   key={city}
                   onClick={() => setPreferences({ ...preferences, city })}
-                  className={`w-full text-left border-2 p-4 transition-colors touch-manipulation ${
+                  className={`w-full text-left border-2 p-4 transition-colors touch-manipulation rounded-[8px] ${
                     preferences.city === city
                       ? 'border-black bg-black text-white'
                       : 'border-gray-300 hover:border-gray-400'
@@ -289,14 +312,14 @@ export function Onboarding() {
               선택하신 정보를 확인해주세요
             </p>
             <div className="space-y-4">
-              <div className="border border-gray-300 p-4">
+              <div className="border border-gray-300 p-4 rounded-[16px]">
                 <h3 className="text-sm md:text-base font-semibold mb-2">여행 스타일</h3>
                 <p className="text-sm md:text-base text-gray-700">
                   {preferences.style === 'relaxed' ? '여유롭게' : preferences.style === 'normal' ? '보통' : '빡빡하게'}
                 </p>
               </div>
               
-              <div className="border border-gray-300 p-4">
+              <div className="border border-gray-300 p-4 rounded-[16px]">
                 <h3 className="text-sm md:text-base font-semibold mb-2">관심 활동</h3>
                 {preferences.interests.length > 0 ? (
                   <div className="flex flex-wrap gap-2">
@@ -314,14 +337,14 @@ export function Onboarding() {
                 )}
               </div>
               
-              <div className="border border-gray-300 p-4">
+              <div className="border border-gray-300 p-4 rounded-[16px]">
                 <h3 className="text-sm md:text-base font-semibold mb-2">예산 수준</h3>
                 <p className="text-sm md:text-base text-gray-700">
                   {preferences.budget === 'low' ? '낮음' : preferences.budget === 'medium' ? '보통' : '높음'}
                 </p>
               </div>
               
-              <div className="border border-gray-300 p-4">
+              <div className="border border-gray-300 p-4 rounded-[16px]">
                 <h3 className="text-sm md:text-base font-semibold mb-2">여행 인원</h3>
                 <p className="text-sm md:text-base text-gray-700">
                   성인 {preferences.adults}명
@@ -329,15 +352,22 @@ export function Onboarding() {
                     <>
                       {' · '}
                       아이 {preferences.children}명
-                      {preferences.childAgeGroup && (
-                        <> ({preferences.childAgeGroup === 'under6' ? '6세 미만' : preferences.childAgeGroup === '6to12' ? '6-12세' : '13세 이상'})</>
+                      {preferences.childAgeGroups && preferences.childAgeGroups.length > 0 && (
+                        <span className="block mt-1 text-xs md:text-sm text-gray-600">
+                          {preferences.childAgeGroups.map((ageGroup, index) => (
+                            <span key={index}>
+                              {index > 0 && ', '}
+                              {index + 1}번째: {ageGroup === 'under6' ? '6세 미만' : ageGroup === '6to12' ? '6-12세' : '13세 이상'}
+                            </span>
+                          ))}
+                        </span>
                       )}
                     </>
                   )}
                 </p>
               </div>
               
-              <div className="border border-gray-300 p-4">
+              <div className="border border-gray-300 p-4 rounded-[16px]">
                 <h3 className="text-sm md:text-base font-semibold mb-2">선호 도시</h3>
                 <p className="text-sm md:text-base text-gray-700">
                   {preferences.city || '선택하지 않음'}
@@ -370,7 +400,7 @@ export function Onboarding() {
       case 2:
         return preferences.budget !== null
       case 3:
-        return preferences.adults > 0 && (preferences.children === 0 || preferences.childAgeGroup !== null)
+        return preferences.adults > 0 && (preferences.children === 0 || (preferences.childAgeGroups && preferences.childAgeGroups.length === preferences.children))
       case 4:
         return preferences.city !== null
       case 5:

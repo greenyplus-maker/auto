@@ -71,23 +71,23 @@ export const designTokens = {
 
   // 버튼 스타일
   button: {
-    primary: 'border-2 border-black px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-black hover:text-white active:bg-gray-800 transition-colors touch-manipulation',
-    secondary: 'border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-sm font-medium hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation',
-    text: 'text-sm md:text-base text-gray-600 hover:text-black active:text-gray-800 transition-colors touch-manipulation',
-    icon: 'p-2 hover:bg-gray-100 transition-colors touch-manipulation',
+    primary: 'border-2 border-black px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-black hover:text-white active:bg-gray-800 transition-colors touch-manipulation rounded-[8px]',
+    secondary: 'border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-sm font-medium hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation rounded-[8px]',
+    text: 'text-sm md:text-base text-gray-600 hover:text-black active:text-gray-800 transition-colors touch-manipulation rounded-[8px]',
+    icon: 'p-2 hover:bg-gray-100 transition-colors touch-manipulation rounded-[8px]',
   },
 
   // 카드 스타일
   card: {
-    default: 'border border-gray-300 p-4 md:p-5',
-    interactive: 'border-2 border-gray-300 p-4 md:p-5 hover:border-black hover:bg-gray-50 active:bg-gray-100 transition-all touch-manipulation',
-    selected: 'border-2 border-black bg-black text-white',
+    default: 'border border-gray-300 p-4 md:p-5 rounded-[16px]',
+    interactive: 'border-2 border-gray-300 p-4 md:p-5 hover:border-black hover:bg-gray-50 active:bg-gray-100 transition-all touch-manipulation rounded-[16px]',
+    selected: 'border-2 border-black bg-black text-white rounded-[16px]',
   },
 
   // 입력 필드
   input: {
-    default: 'w-full h-10 border border-gray-400 px-4 bg-white text-base md:text-sm rounded-[4px] touch-manipulation focus:outline-none focus:border-black',
-    textarea: 'w-full min-h-[100px] border border-gray-400 px-4 py-3 bg-white text-base md:text-sm rounded-[4px] touch-manipulation focus:outline-none focus:border-black resize-none',
+    default: 'w-full h-10 border border-gray-400 px-4 bg-white text-base md:text-sm rounded-[8px] touch-manipulation focus:outline-none focus:border-black',
+    textarea: 'w-full min-h-[100px] border border-gray-400 px-4 py-3 bg-white text-base md:text-sm rounded-[8px] touch-manipulation focus:outline-none focus:border-black resize-none',
     disabled: 'disabled:bg-gray-100 disabled:text-gray-500 disabled:cursor-not-allowed',
   },
 

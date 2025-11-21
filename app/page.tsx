@@ -270,7 +270,7 @@ export default function Home() {
                 <button
                   key={spot.id}
                   onClick={() => handleSpotClick(spot)}
-                  className="text-left border border-gray-300 p-4 md:p-5 hover:border-black hover:bg-gray-50 active:bg-gray-100 transition-all touch-manipulation"
+                  className="text-left border border-gray-300 p-4 md:p-5 hover:border-black hover:bg-gray-50 active:bg-gray-100 transition-all touch-manipulation rounded-[16px]"
                 >
                   <h3 className="font-semibold text-base md:text-lg mb-2">{spot.name}</h3>
                   <p className="text-xs md:text-sm text-gray-500 mb-2">{spot.area}</p>
@@ -302,7 +302,7 @@ export default function Home() {
           <div className="max-w-2xl mx-auto">
             <Link
               href="/plan/new"
-              className="block w-full text-center bg-black text-white px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-gray-800 active:bg-gray-900 transition-colors touch-manipulation rounded-lg"
+              className="block w-full text-center bg-black text-white px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-gray-800 active:bg-gray-900 transition-colors touch-manipulation rounded-[8px]"
             >
               일정 만들기 시작하기
             </Link>

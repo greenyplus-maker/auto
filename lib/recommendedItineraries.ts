@@ -7,7 +7,7 @@ interface OnboardingPreferences {
   budget: string | null
   adults: number
   children: number
-  childAgeGroup: string | null
+  childAgeGroups: string[] | null
   city: string | null
 }
 
@@ -53,7 +53,9 @@ export function generateRecommendedItineraries(
       endDate: endDate.toISOString().split('T')[0],
       adults: onboardingPrefs.adults,
       children: onboardingPrefs.children,
-      childAgeGroup: (onboardingPrefs.childAgeGroup as any) || '6to12',
+      childAgeGroups: onboardingPrefs.childAgeGroups && onboardingPrefs.childAgeGroups.length > 0
+        ? (onboardingPrefs.childAgeGroups as any)
+        : onboardingPrefs.children > 0 ? Array(onboardingPrefs.children).fill('6to12') : [],
       style: onboardingPrefs.style as any,
       interests: onboardingPrefs.interests || [],
       budget: onboardingPrefs.budget as any,

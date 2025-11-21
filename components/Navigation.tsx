@@ -16,6 +16,7 @@ const navItems: NavItem[] = [
   { href: '/plan/new', label: '새 일정', showWhen: 'always' },
   { href: '/plan', label: '일정 보기', showWhen: 'hasItinerary' },
   { href: '/plan/share', label: '공유', showWhen: 'hasItinerary' },
+  { href: '/spots/favorites', label: '관심 스팟', showWhen: 'always' },
 ]
 
 export function Navigation() {
@@ -98,7 +99,7 @@ export function Navigation() {
                         key={item.href}
                         href={item.href}
                         onClick={handleLinkClick}
-                        className={`block py-3 px-4 text-base font-medium transition-colors touch-manipulation rounded ${
+                        className={`block py-3 px-4 text-base font-medium transition-colors touch-manipulation rounded-[8px] ${
                           isActive
                             ? 'text-black bg-gray-100'
                             : 'text-gray-700 hover:bg-gray-50'
@@ -110,7 +111,7 @@ export function Navigation() {
                   })}
                   <button
                     onClick={handleShowOnboarding}
-                    className="block w-full text-left py-3 px-4 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors touch-manipulation rounded"
+                    className="block w-full text-left py-3 px-4 text-base font-medium text-gray-700 hover:bg-gray-50 transition-colors touch-manipulation rounded-[8px]"
                   >
                     온보딩 다시보기
                   </button>

@@ -10,8 +10,14 @@ import type { PlaceCategory } from '@/types'
 export default function PlaceDetailPage() {
   const params = useParams()
   const router = useRouter()
-  const { itinerary, updateItinerary, onboardingPreferences } = useItineraryStore()
+  const { itinerary, updateItinerary, onboardingPreferences, favoritePlaces, addFavoritePlace, removeFavoritePlace, isFavoritePlace } = useItineraryStore()
   const placeId = params.placeId as string
+  const isFavorite = isFavoritePlace(placeId)
+  
+  // 일정에 포함된 스팟인지 확인
+  const isInItinerary = itinerary?.days.some((day) =>
+    day.slots.some((slot) => slot.placeId === placeId)
+  ) ?? false
   
   // 모든 장소 목록에서 찾기 (itinerary가 없어도 작동)
   let allPlaces: typeof mockPlaces.tokyo = []
@@ -86,6 +92,14 @@ export default function PlaceDetailPage() {
     router.push(`/place/${randomPlace.id}`)
   }
   
+  const handleToggleFavorite = () => {
+    if (isFavorite) {
+      removeFavoritePlace(placeId)
+    } else {
+      addFavoritePlace(place)
+    }
+  }
+  
   return (
     <main className="min-h-screen p-4 md:p-8">
       <div className="max-w-2xl mx-auto">
@@ -104,17 +118,17 @@ export default function PlaceDetailPage() {
         </div>
         
         <div className="space-y-4 md:space-y-6">
-          <div className="border border-gray-300 p-4 md:p-5">
+          <div className="border border-gray-300 p-4 md:p-5 rounded-[16px]">
             <h2 className="font-semibold text-base md:text-lg mb-2 md:mb-3">위치</h2>
             <p className="text-sm md:text-base text-gray-700">{place.area} 지역</p>
           </div>
           
-          <div className="border border-gray-300 p-4 md:p-5">
+          <div className="border border-gray-300 p-4 md:p-5 rounded-[16px]">
             <h2 className="font-semibold text-base md:text-lg mb-2 md:mb-3">설명</h2>
             <p className="text-sm md:text-base text-gray-700 leading-relaxed">{place.description}</p>
           </div>
           
-          <div className="border border-gray-300 p-4 md:p-5">
+          <div className="border border-gray-300 p-4 md:p-5 rounded-[16px]">
             <h2 className="font-semibold text-base md:text-lg mb-3 md:mb-4">추천 이유</h2>
             <p className="text-sm md:text-base text-gray-700 leading-relaxed">
               이 장소는 {categoryLabels[place.category]} 카테고리에 속하며, {place.area} 지역의 대표적인 관광지입니다.
@@ -122,22 +136,35 @@ export default function PlaceDetailPage() {
             </p>
           </div>
           
-          {itinerary && (
-            <div className="flex flex-col md:flex-row gap-3 md:gap-4 pt-4 md:pt-6 border-t border-gray-300">
-              <button
-                onClick={handleRemoveFromItinerary}
-                className="flex-1 border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-sm hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
-              >
-                일정에서 제거
-              </button>
-              <button
-                onClick={handleSwapWithSimilar}
-                className="flex-1 border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-sm hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
-              >
-                유사한 장소로 교체
-              </button>
-            </div>
-          )}
+          <div className="flex flex-col md:flex-row gap-3 md:gap-4 pt-4 md:pt-6 border-t border-gray-300">
+            <button
+              onClick={handleToggleFavorite}
+              className={`flex-1 border px-4 py-3 md:py-2 text-sm md:text-sm transition-colors touch-manipulation ${
+                isFavorite
+                  ? 'bg-black text-white border-black hover:bg-gray-800 active:bg-gray-900'
+                  : 'border-gray-400 hover:bg-gray-100 active:bg-gray-200'
+              }`}
+            >
+              {isFavorite ? '관심 스팟에서 제거' : '관심 스팟에 저장'}
+            </button>
+            
+            {isInItinerary && (
+              <>
+                <button
+                  onClick={handleRemoveFromItinerary}
+                  className="flex-1 border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-sm hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
+                >
+                  일정에서 제거
+                </button>
+                <button
+                  onClick={handleSwapWithSimilar}
+                  className="flex-1 border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-sm hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation"
+                >
+                  유사한 장소로 교체
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </main>

@@ -10,7 +10,7 @@ export interface TripPreferences {
   endDate: string
   adults: number
   children: number
-  childAgeGroup: ChildAgeGroup
+  childAgeGroups: ChildAgeGroup[]
   style: TravelStyle
   interests: string[]
   budget: Budget

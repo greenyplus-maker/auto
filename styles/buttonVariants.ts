@@ -7,7 +7,7 @@ import { designTokens } from './designTokens'
 
 export const buttonVariants = {
   primary: {
-    base: 'w-full text-center border-2 border-black font-medium transition-colors touch-manipulation',
+    base: 'w-full text-center border-2 border-black font-medium transition-colors touch-manipulation rounded-[8px]',
     sizes: {
       large: 'px-6 py-4 md:px-8 md:py-3 text-base md:text-lg',
       medium: 'px-4 py-3 md:px-6 md:py-2 text-sm md:text-base',
@@ -20,7 +20,7 @@ export const buttonVariants = {
     },
   },
   secondary: {
-    base: 'border border-gray-400 font-medium transition-colors touch-manipulation',
+    base: 'border border-gray-400 font-medium transition-colors touch-manipulation rounded-[8px]',
     sizes: {
       large: 'px-6 py-4 md:px-8 md:py-3 text-base md:text-lg',
       medium: 'px-4 py-3 md:px-6 md:py-2 text-sm md:text-base',
@@ -33,7 +33,7 @@ export const buttonVariants = {
     },
   },
   text: {
-    base: 'text-gray-600 font-medium transition-colors touch-manipulation',
+    base: 'text-gray-600 font-medium transition-colors touch-manipulation rounded-[8px]',
     sizes: {
       large: 'px-4 py-3 text-base',
       medium: 'px-3 py-2 text-sm',

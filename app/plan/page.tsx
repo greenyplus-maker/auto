@@ -94,7 +94,7 @@ export default function PlanPage() {
             <Link
               key={day.index}
               href={`/plan/day/${day.index}`}
-              className="block border border-gray-300 p-4 md:p-5 hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation"
+              className="block border border-gray-300 p-4 md:p-5 hover:bg-gray-50 active:bg-gray-100 transition-colors touch-manipulation rounded-[16px]"
             >
               <div className="flex items-start justify-between">
                 <div className="flex-1">
@@ -115,7 +115,7 @@ export default function PlanPage() {
           <div className="max-w-4xl mx-auto">
             <Link
               href="/plan/share"
-              className="block w-full text-center bg-black text-white px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-gray-800 active:bg-gray-900 transition-colors touch-manipulation rounded-lg"
+              className="block w-full text-center bg-black text-white px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-gray-800 active:bg-gray-900 transition-colors touch-manipulation rounded-[8px]"
             >
               일정 공유하기
             </Link>

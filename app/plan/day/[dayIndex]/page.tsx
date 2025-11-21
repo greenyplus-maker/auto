@@ -78,7 +78,7 @@ export default function DayDetailPage() {
             if (!place) return null
             
             return (
-              <div key={slot.id} className="border border-gray-300 p-4 md:p-5">
+              <div key={slot.id} className="border border-gray-300 p-4 md:p-5 rounded-[16px]">
                 <div className="flex items-start justify-between mb-3 md:mb-2">
                   <div className="flex-1">
                     <h3 className="font-semibold text-base md:text-lg mb-1 md:mb-2">{slot.label}</h3>
