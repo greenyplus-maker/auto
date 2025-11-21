@@ -36,6 +36,8 @@ export default function PlaceDetailPage() {
     ...mockPlaces.osaka,
     ...mockPlaces.kyoto,
     ...mockPlaces.fukuoka,
+    ...mockPlaces.hokkaido,
+    ...mockPlaces.okinawa,
   ]
   
   const place = allCitiesPlaces.find((p) => p.id === placeId)

@@ -170,6 +170,94 @@ export const mockPlaces: Record<string, Place[]> = {
       description: '후쿠오카의 랜드마크 타워로, 야경이 특히 아름답습니다.',
     },
   ],
+  hokkaido: [
+    {
+      id: 'hokkaido-1',
+      name: '삿포로 맥주 정원',
+      category: 'other',
+      area: '삿포로',
+      description: '삿포로 맥주의 역사를 체험할 수 있는 박물관과 맥주 정원입니다.',
+    },
+    {
+      id: 'hokkaido-2',
+      name: '오타루 운하',
+      category: 'nature',
+      area: '오타루',
+      description: '석유 램프로 아름답게 장식된 운하로, 낭만적인 분위기를 즐길 수 있습니다.',
+    },
+    {
+      id: 'hokkaido-3',
+      name: '후라노 꽃밭',
+      category: 'nature',
+      area: '후라노',
+      description: '여름에는 라벤더와 다양한 꽃으로 가득한 아름다운 꽃밭입니다.',
+    },
+    {
+      id: 'hokkaido-4',
+      name: '노보리베츠 온천',
+      category: 'other',
+      area: '노보리베츠',
+      description: '일본 최고의 온천지로, 자연 속에서 힐링을 즐길 수 있습니다.',
+    },
+    {
+      id: 'hokkaido-5',
+      name: '삿포로 라멘 요코초',
+      category: 'restaurant',
+      area: '삿포로',
+      description: '삿포로 스타일의 미소 라멘을 맛볼 수 있는 유명 거리입니다.',
+    },
+    {
+      id: 'hokkaido-6',
+      name: '아사히야마 동물원',
+      category: 'other',
+      area: '아사히카와',
+      description: '펭귄 행진으로 유명한 동물원으로, 가족 여행에 최적입니다.',
+    },
+  ],
+  okinawa: [
+    {
+      id: 'okinawa-1',
+      name: '슈리 성',
+      category: 'museum',
+      area: '나하',
+      description: '유네스코 세계문화유산으로 지정된 류큐 왕국의 성입니다.',
+    },
+    {
+      id: 'okinawa-2',
+      name: '아쿠아리움 츄라우미',
+      category: 'other',
+      area: '모토부',
+      description: '세계 최대 규모의 수조를 가진 아쿠아리움으로, 거대한 고래상어를 볼 수 있습니다.',
+    },
+    {
+      id: 'okinawa-3',
+      name: '만자모 해변',
+      category: 'nature',
+      area: '나고',
+      description: '에메랄드 빛 바다와 하얀 모래사장이 아름다운 해변입니다.',
+    },
+    {
+      id: 'okinawa-4',
+      name: '코코쿠시가키',
+      category: 'nature',
+      area: '나고',
+      description: '투명한 바다와 산호초가 아름다운 다이빙 스팟입니다.',
+    },
+    {
+      id: 'okinawa-5',
+      name: '오키나와 소바',
+      category: 'restaurant',
+      area: '나하',
+      description: '오키나와의 대표 음식인 소바를 맛볼 수 있는 식당입니다.',
+    },
+    {
+      id: 'okinawa-6',
+      name: '아메리칸 빌리지',
+      category: 'shopping',
+      area: '쵸탄',
+      description: '미국 문화가 느껴지는 쇼핑 거리로, 독특한 분위기를 즐길 수 있습니다.',
+    },
+  ],
 }
 
 export function getPlacesByCity(city: string): Place[] {
@@ -182,6 +270,10 @@ export function getPlacesByCity(city: string): Place[] {
     return mockPlaces.kyoto
   } else if (cityKey.includes('fukuoka') || cityKey.includes('후쿠오카') || cityKey.includes('복강')) {
     return mockPlaces.fukuoka
+  } else if (cityKey.includes('hokkaido') || cityKey.includes('홋카이도') || cityKey.includes('홋가이도') || cityKey.includes('북해도')) {
+    return mockPlaces.hokkaido
+  } else if (cityKey.includes('okinawa') || cityKey.includes('오키나와') || cityKey.includes('오끼나와') || cityKey.includes('류큐')) {
+    return mockPlaces.okinawa
   }
   // 기본값으로 도쿄 장소 반환
   return mockPlaces.tokyo
@@ -210,6 +302,13 @@ export function getPopularJapanSpots(): Place[] {
     mockPlaces.kyoto[0], // 후시미 이나리 신사
     mockPlaces.kyoto[1], // 기요미즈데라
     mockPlaces.kyoto[2], // 아라시야마
+    // 홋카이도
+    mockPlaces.hokkaido[0], // 삿포로 맥주 정원
+    mockPlaces.hokkaido[2], // 후라노 꽃밭
+    // 오키나와
+    mockPlaces.okinawa[0], // 슈리 성
+    mockPlaces.okinawa[1], // 아쿠아리움 츄라우미
+    mockPlaces.okinawa[2], // 만자모 해변
   ]
 }
 

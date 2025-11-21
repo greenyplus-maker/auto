@@ -3,7 +3,14 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { useItineraryStore } from '@/store/itineraryStore'
-import type { TravelStyle, Budget, ChildAgeGroup } from '@/types'
+import type { TravelStyle, Budget, ChildAgeGroup, TravelGroupType } from '@/types'
+
+const travelGroupTypes = [
+  { value: 'family', label: '가족', adults: 2, children: 0, allowChildren: true, minAdults: 2, maxAdults: 4 },
+  { value: 'lovers', label: '연인', adults: 2, children: 0, allowChildren: false, minAdults: 2, maxAdults: 2 },
+  { value: 'friends', label: '친구', adults: 2, children: 0, allowChildren: false, minAdults: 2, maxAdults: 8 },
+  { value: 'parents', label: '효도', adults: 2, children: 0, allowChildren: false, minAdults: 2, maxAdults: 4 },
+] as const
 
 interface OnboardingPreferences {
   style: TravelStyle | null
@@ -12,6 +19,7 @@ interface OnboardingPreferences {
   adults: number
   children: number
   childAgeGroups: ChildAgeGroup[] | null
+  groupType: TravelGroupType | null
   city: string | null
 }
 
@@ -24,7 +32,7 @@ const interests = [
   { value: 'nature', label: '자연/공원' },
 ]
 
-const cities = ['도쿄', '오사카', '교토', '후쿠오카', '아직 정하지 않음']
+const cities = ['도쿄', '오사카', '교토', '후쿠오카', '홋카이도', '오키나와', '아직 정하지 않음']
 
 export function Onboarding() {
   const router = useRouter()
@@ -39,6 +47,7 @@ export function Onboarding() {
     adults: 2,
     children: 0,
     childAgeGroups: null,
+    groupType: null,
     city: null,
   })
   
@@ -200,46 +209,90 @@ export function Onboarding() {
               여행 인원을 알려주세요
             </p>
             <div>
-              <label className="block text-sm md:text-base font-medium mb-2">성인 수</label>
-              <div className="flex gap-2">
-                {[1, 2, 3, 4, 5].map((num) => (
+              <label className="block text-sm md:text-base font-medium mb-2">인원 구성</label>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3 mb-4 md:mb-6">
+                {travelGroupTypes.map((group) => (
                   <button
-                    key={num}
-                    onClick={() => setPreferences({ ...preferences, adults: num })}
-                    className={`flex-1 border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation rounded-[8px] ${
-                      preferences.adults === num
+                    key={group.value}
+                    type="button"
+                    onClick={() => {
+                      const newAgeGroups = group.children > 0 
+                        ? Array(group.children).fill('6to12' as ChildAgeGroup)
+                        : null
+                      setPreferences({ 
+                        ...preferences, 
+                        groupType: group.value as TravelGroupType,
+                        adults: group.adults,
+                        children: group.children,
+                        childAgeGroups: newAgeGroups
+                      })
+                    }}
+                    className={`border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation rounded-[8px] ${
+                      preferences.groupType === group.value
                         ? 'border-black bg-black text-white'
                         : 'border-gray-300 hover:border-gray-400'
                     }`}
                   >
-                    {num}명
+                    {group.label}
                   </button>
                 ))}
               </div>
             </div>
             <div>
-              <label className="block text-sm md:text-base font-medium mb-2">아이 수</label>
-              <div className="flex gap-2">
-                {[0, 1, 2, 3].map((num) => (
-                  <button
-                    key={num}
-                    onClick={() => {
-                      const newAgeGroups = num > 0 
-                        ? Array(num).fill('6to12' as ChildAgeGroup)
-                        : null
-                      setPreferences({ ...preferences, children: num, childAgeGroups: newAgeGroups })
-                    }}
-                    className={`flex-1 border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation rounded-[8px] ${
-                      preferences.children === num
-                        ? 'border-black bg-black text-white'
-                        : 'border-gray-300 hover:border-gray-400'
-                    }`}
-                  >
-                    {num}명
-                  </button>
-                ))}
+              <label className="block text-sm md:text-base font-medium mb-2">성인 수</label>
+              <div className="flex gap-2 flex-wrap">
+                {(() => {
+                  const selectedGroup = travelGroupTypes.find(g => g.value === preferences.groupType)
+                  const minAdults = selectedGroup?.minAdults || 1
+                  const maxAdults = selectedGroup?.maxAdults || 5
+                  const adultOptions = Array.from({ length: maxAdults - minAdults + 1 }, (_, i) => minAdults + i)
+                  
+                  return adultOptions.map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => setPreferences({ ...preferences, adults: num })}
+                      className={`flex-1 border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation rounded-[8px] ${
+                        preferences.adults === num
+                          ? 'border-black bg-black text-white'
+                          : 'border-gray-300 hover:border-gray-400'
+                      }`}
+                    >
+                      {num}명
+                    </button>
+                  ))
+                })()}
               </div>
             </div>
+            {(() => {
+              const selectedGroup = travelGroupTypes.find(g => g.value === preferences.groupType)
+              if (!selectedGroup?.allowChildren) return null
+              
+              return (
+                <div>
+                  <label className="block text-sm md:text-base font-medium mb-2">아이 수</label>
+                  <div className="flex gap-2 flex-wrap">
+                    {[0, 1, 2, 3, 4].map((num) => (
+                      <button
+                        key={num}
+                        onClick={() => {
+                          const newAgeGroups = num > 0 
+                            ? Array(num).fill('6to12' as ChildAgeGroup)
+                            : null
+                          setPreferences({ ...preferences, children: num, childAgeGroups: newAgeGroups })
+                        }}
+                        className={`flex-1 border-2 p-3 md:p-4 text-sm md:text-base transition-colors touch-manipulation rounded-[8px] ${
+                          preferences.children === num
+                            ? 'border-black bg-black text-white'
+                            : 'border-gray-300 hover:border-gray-400'
+                        }`}
+                      >
+                        {num}명
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )
+            })()}
             {preferences.children > 0 && (
               <div>
                 <label className="block text-sm md:text-base font-medium mb-2">아이 연령대</label>
@@ -347,6 +400,11 @@ export function Onboarding() {
               <div className="border border-gray-300 p-4 rounded-[16px]">
                 <h3 className="text-sm md:text-base font-semibold mb-2">여행 인원</h3>
                 <p className="text-sm md:text-base text-gray-700">
+                  {preferences.groupType && (
+                    <span className="block mb-1">
+                      {travelGroupTypes.find(g => g.value === preferences.groupType)?.label || '기타'}
+                    </span>
+                  )}
                   성인 {preferences.adults}명
                   {preferences.children > 0 && (
                     <>

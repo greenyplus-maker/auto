@@ -3,6 +3,7 @@ export type TravelStyle = "relaxed" | "normal" | "intensive"
 export type Budget = "low" | "medium" | "high"
 export type PlaceCategory = "cafe" | "restaurant" | "shopping" | "museum" | "themePark" | "nature" | "other"
 export type TimeSlotLabel = "Morning" | "Lunch" | "Afternoon" | "Dinner" | "Evening"
+export type TravelGroupType = "couple" | "family" | "kids" | "parents" | "lovers" | "friends" | ""
 
 export interface TripPreferences {
   city: string
@@ -11,6 +12,7 @@ export interface TripPreferences {
   adults: number
   children: number
   childAgeGroups: ChildAgeGroup[]
+  groupType: TravelGroupType
   style: TravelStyle
   interests: string[]
   budget: Budget
