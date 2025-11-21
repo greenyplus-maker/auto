@@ -3,11 +3,17 @@
 import { useRouter } from 'next/navigation'
 import { useItineraryStore } from '@/store/itineraryStore'
 import { useState } from 'react'
+import { EditItineraryModal } from '@/components/EditItineraryModal'
+import { generateItinerary } from '@/lib/itineraryGenerator'
+import type { TripPreferences } from '@/types'
 
 export default function SavedItinerariesPage() {
   const router = useRouter()
-  const { savedItineraries, loadSavedItinerary, deleteSavedItinerary } = useItineraryStore()
+  const { savedItineraries, loadSavedItinerary, deleteSavedItinerary, updateSavedItineraryTitle, updateSavedItinerary } = useItineraryStore()
   const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
+  const [editTitle, setEditTitle] = useState<string>('')
+  const [editingConditionsId, setEditingConditionsId] = useState<string | null>(null)
 
   const handleLoad = (id: string) => {
     const itinerary = loadSavedItinerary(id)
@@ -23,6 +29,48 @@ export default function SavedItinerariesPage() {
       deleteSavedItinerary(id)
       setTimeout(() => setDeletingId(null), 300)
     }
+  }
+
+  const handleStartEdit = (id: string, currentTitle: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setEditingId(id)
+    setEditTitle(currentTitle || '')
+  }
+
+  const handleSaveEdit = (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    if (editTitle.trim()) {
+      updateSavedItineraryTitle(id, editTitle.trim())
+    }
+    setEditingId(null)
+    setEditTitle('')
+  }
+
+  const handleCancelEdit = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    setEditingId(null)
+    setEditTitle('')
+  }
+
+  const handleEditConditions = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation()
+    setEditingConditionsId(id)
+  }
+
+  const handleSaveConditions = (preferences: TripPreferences) => {
+    if (!editingConditionsId) return
+    
+    const saved = savedItineraries.find((si) => si.id === editingConditionsId)
+    if (!saved) return
+    
+    // 새로운 일정 생성
+    const newItinerary = generateItinerary(preferences)
+    
+    // 저장된 일정 업데이트
+    updateSavedItinerary(editingConditionsId, newItinerary, saved.title)
+    
+    setEditingConditionsId(null)
+    alert('일정 조건이 수정되었습니다.')
   }
 
   const formatDate = (dateString: string) => {
@@ -66,27 +114,76 @@ export default function SavedItinerariesPage() {
                 }`}
               >
                 <div className="flex items-start justify-between gap-4">
-                  <div
-                    className="flex-1 cursor-pointer"
-                    onClick={() => handleLoad(saved.id)}
-                  >
+                  <div className="flex-1">
                     <div className="flex items-start justify-between mb-3">
-                      <div>
-                        <h3 className="text-base md:text-lg font-semibold mb-1">
-                          {saved.itinerary.city}
-                        </h3>
-                        <p className="text-sm md:text-base text-gray-600">
+                      <div className="flex-1">
+                        {editingId === saved.id ? (
+                          <div className="mb-2">
+                            <input
+                              type="text"
+                              value={editTitle}
+                              onChange={(e) => setEditTitle(e.target.value)}
+                              onKeyDown={(e) => {
+                                if (e.key === 'Enter') {
+                                  handleSaveEdit(saved.id)
+                                } else if (e.key === 'Escape') {
+                                  handleCancelEdit()
+                                }
+                              }}
+                              onClick={(e) => e.stopPropagation()}
+                              className="w-full border border-black px-3 py-2 text-base md:text-lg font-semibold focus:outline-none rounded-[8px]"
+                              autoFocus
+                            />
+                            <div className="flex gap-2 mt-2">
+                              <button
+                                onClick={(e) => handleSaveEdit(saved.id, e)}
+                                className="px-3 py-1 text-xs md:text-sm border border-black hover:bg-black hover:text-white transition-colors rounded-[8px]"
+                              >
+                                저장
+                              </button>
+                              <button
+                                onClick={(e) => handleCancelEdit(e)}
+                                className="px-3 py-1 text-xs md:text-sm border border-gray-400 hover:bg-gray-100 transition-colors rounded-[8px]"
+                              >
+                                취소
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <h3
+                              className="text-base md:text-lg font-semibold mb-1 cursor-pointer hover:text-gray-600"
+                              onClick={() => handleLoad(saved.id)}
+                            >
+                              {saved.title || saved.itinerary.city}
+                            </h3>
+                            <button
+                              onClick={(e) => handleStartEdit(saved.id, saved.title || saved.itinerary.city, e)}
+                              className="text-xs md:text-sm text-gray-500 hover:text-black px-2 py-1 border border-gray-300 hover:border-black transition-colors rounded-[8px]"
+                              title="제목 편집"
+                            >
+                              편집
+                            </button>
+                          </div>
+                        )}
+                        <p
+                          className="text-sm md:text-base text-gray-600 cursor-pointer"
+                          onClick={() => handleLoad(saved.id)}
+                        >
                           {saved.itinerary.startDate} ~ {saved.itinerary.endDate}
                         </p>
                       </div>
                     </div>
                     <div className="flex flex-wrap gap-2 mb-3">
                       <span className="text-xs md:text-sm px-2 py-1 bg-gray-100 rounded-[8px]">
-                        {saved.itinerary.days.length}일
+                        {saved.itinerary.city}
                       </span>
                       <span className="text-xs md:text-sm px-2 py-1 bg-gray-100 rounded-[8px]">
                         성인 {saved.itinerary.preferences.adults}명
                         {saved.itinerary.preferences.children > 0 && ` · 아이 ${saved.itinerary.preferences.children}명`}
+                      </span>
+                      <span className="text-xs md:text-sm px-2 py-1 bg-gray-100 rounded-[8px]">
+                        {saved.itinerary.preferences.budget === 'low' ? '저예산' : saved.itinerary.preferences.budget === 'medium' ? '보통' : '고예산'}
                       </span>
                     </div>
                     <p className="text-xs md:text-sm text-gray-500">
@@ -101,6 +198,12 @@ export default function SavedItinerariesPage() {
                       불러오기
                     </button>
                     <button
+                      onClick={(e) => handleEditConditions(saved.id, e)}
+                      className="px-4 py-2 text-sm md:text-base border border-gray-400 text-gray-600 hover:bg-gray-200 active:bg-gray-300 transition-colors touch-manipulation rounded-[8px] whitespace-nowrap"
+                    >
+                      조건 수정
+                    </button>
+                    <button
                       onClick={(e) => handleDelete(saved.id, e)}
                       className="px-4 py-2 text-sm md:text-base border border-gray-400 text-gray-600 hover:bg-gray-200 active:bg-gray-300 transition-colors touch-manipulation rounded-[8px] whitespace-nowrap"
                     >
@@ -113,6 +216,21 @@ export default function SavedItinerariesPage() {
           </div>
         )}
       </div>
+
+      {/* 조건 수정 모달 */}
+      {editingConditionsId && (() => {
+        const saved = savedItineraries.find((si) => si.id === editingConditionsId)
+        if (!saved) return null
+        
+        return (
+          <EditItineraryModal
+            isOpen={!!editingConditionsId}
+            onClose={() => setEditingConditionsId(null)}
+            initialPreferences={saved.itinerary.preferences}
+            onSave={handleSaveConditions}
+          />
+        )
+      })()}
     </main>
   )
 }

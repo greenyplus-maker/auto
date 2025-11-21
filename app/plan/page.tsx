@@ -13,6 +13,8 @@ export default function PlanPage() {
   const [scheduleDensity, setScheduleDensity] = useState<TravelStyle>('normal')
   const [childFriendly, setChildFriendly] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
+  const [showSaveModal, setShowSaveModal] = useState(false)
+  const [saveTitle, setSaveTitle] = useState('')
   
   useEffect(() => {
     if (!itinerary || !preferences) {
@@ -35,12 +37,27 @@ export default function PlanPage() {
 
   const handleSave = () => {
     if (!itinerary) return
+    // 기본 제목 설정
+    const defaultTitle = `${itinerary.city} 여행`
+    setSaveTitle(defaultTitle)
+    setShowSaveModal(true)
+  }
+
+  const handleConfirmSave = () => {
+    if (!itinerary) return
     setIsSaving(true)
-    saveItinerary(itinerary)
+    saveItinerary(itinerary, saveTitle.trim() || undefined)
     setTimeout(() => {
       setIsSaving(false)
+      setShowSaveModal(false)
+      setSaveTitle('')
       alert('일정이 저장되었습니다.')
     }, 300)
+  }
+
+  const handleCancelSave = () => {
+    setShowSaveModal(false)
+    setSaveTitle('')
   }
   
   if (!itinerary || !preferences) {
@@ -148,6 +165,53 @@ export default function PlanPage() {
         {/* 플로팅 버튼 공간 확보 */}
         <div className="h-20 md:h-24" />
       </div>
+
+      {/* 저장 모달 */}
+      {showSaveModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-[16px] p-6 md:p-8 max-w-md w-full">
+            <h2 className="text-xl md:text-2xl font-bold mb-4">일정 저장</h2>
+            <div className="mb-6">
+              <label className="block text-sm md:text-base font-medium mb-2">
+                일정 제목
+              </label>
+              <input
+                type="text"
+                value={saveTitle}
+                onChange={(e) => setSaveTitle(e.target.value)}
+                placeholder="일정 제목을 입력하세요"
+                className="w-full border border-gray-300 px-4 py-3 md:py-2 text-sm md:text-base focus:border-black focus:outline-none rounded-[8px]"
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleConfirmSave()
+                  } else if (e.key === 'Escape') {
+                    handleCancelSave()
+                  }
+                }}
+              />
+              <p className="text-xs md:text-sm text-gray-500 mt-2">
+                제목을 입력하지 않으면 "{itinerary?.city} 여행"으로 저장됩니다.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={handleCancelSave}
+                className="flex-1 border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-base hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation rounded-[8px]"
+              >
+                취소
+              </button>
+              <button
+                onClick={handleConfirmSave}
+                disabled={isSaving}
+                className="flex-1 bg-black text-white px-4 py-3 md:py-2 text-sm md:text-base hover:bg-gray-800 active:bg-gray-900 transition-colors touch-manipulation rounded-[8px] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSaving ? '저장 중...' : '저장'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }

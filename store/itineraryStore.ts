@@ -17,6 +17,7 @@ interface OnboardingPreferences {
 
 interface SavedItinerary {
   id: string
+  title: string
   savedAt: string
   itinerary: Itinerary
 }
@@ -39,9 +40,11 @@ interface ItineraryState {
   addFavoritePlace: (place: Place) => void
   removeFavoritePlace: (placeId: string) => void
   isFavoritePlace: (placeId: string) => boolean
-  saveItinerary: (itinerary: Itinerary) => string
+  saveItinerary: (itinerary: Itinerary, title?: string) => string
   loadSavedItinerary: (id: string) => Itinerary | null
   deleteSavedItinerary: (id: string) => void
+  updateSavedItineraryTitle: (id: string, title: string) => void
+  updateSavedItinerary: (id: string, itinerary: Itinerary, title?: string) => void
 }
 
 export const useItineraryStore = create<ItineraryState>()(
@@ -75,11 +78,12 @@ export const useItineraryStore = create<ItineraryState>()(
         const { favoritePlaces } = get()
         return favoritePlaces.some((p) => p.id === placeId)
       },
-      saveItinerary: (itinerary) => {
+      saveItinerary: (itinerary, title) => {
         const { savedItineraries } = get()
         const id = `saved-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
         const savedItinerary: SavedItinerary = {
           id,
+          title: title || `${itinerary.city} 여행`,
           savedAt: new Date().toISOString(),
           itinerary,
         }
@@ -98,6 +102,28 @@ export const useItineraryStore = create<ItineraryState>()(
       deleteSavedItinerary: (id) => {
         const { savedItineraries } = get()
         set({ savedItineraries: savedItineraries.filter((si) => si.id !== id) })
+      },
+      updateSavedItineraryTitle: (id, title) => {
+        const { savedItineraries } = get()
+        set({
+          savedItineraries: savedItineraries.map((si) =>
+            si.id === id ? { ...si, title: title.trim() || `${si.itinerary.city} 여행` } : si
+          ),
+        })
+      },
+      updateSavedItinerary: (id, itinerary, title) => {
+        const { savedItineraries } = get()
+        set({
+          savedItineraries: savedItineraries.map((si) =>
+            si.id === id
+              ? {
+                  ...si,
+                  itinerary,
+                  title: title?.trim() || si.title || `${itinerary.city} 여행`,
+                }
+              : si
+          ),
+        })
       },
     }),
     {
