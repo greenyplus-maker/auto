@@ -8,6 +8,8 @@ export const mockPlaces: Record<string, Place[]> = {
       category: 'other',
       area: '시부야',
       description: '세계에서 가장 유명한 교차로 중 하나로, 수많은 사람들이 동시에 건너는 장관을 볼 수 있습니다.',
+      latitude: 35.6598,
+      longitude: 139.7006,
     },
     {
       id: 'tokyo-2',

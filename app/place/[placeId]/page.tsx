@@ -5,6 +5,7 @@ import { useItineraryStore } from '@/store/itineraryStore'
 import { mockPlaces, getPlacesByCity, getPopularJapanSpots } from '@/lib/mockData'
 import { Breadcrumb } from '@/components/Breadcrumb'
 import { BackButton } from '@/components/BackButton'
+import { GoogleMapComponent } from '@/components/GoogleMap'
 import type { PlaceCategory } from '@/types'
 
 export default function PlaceDetailPage() {
@@ -122,7 +123,19 @@ export default function PlaceDetailPage() {
         <div className="space-y-4 md:space-y-6">
           <div className="border border-gray-300 p-4 md:p-5 rounded-[16px]">
             <h2 className="font-semibold text-base md:text-lg mb-2 md:mb-3">위치</h2>
-            <p className="text-sm md:text-base text-gray-700">{place.area} 지역</p>
+            <p className="text-sm md:text-base text-gray-700 mb-4">{place.area} 지역</p>
+            {place.latitude && place.longitude ? (
+              <div className="mt-4 rounded-[8px] overflow-hidden">
+                <GoogleMapComponent
+                  latitude={place.latitude}
+                  longitude={place.longitude}
+                  placeName={place.name}
+                  height="300px"
+                />
+              </div>
+            ) : (
+              <p className="text-xs md:text-sm text-gray-500">지도 정보가 없습니다.</p>
+            )}
           </div>
           
           <div className="border border-gray-300 p-4 md:p-5 rounded-[16px]">

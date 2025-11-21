@@ -24,6 +24,9 @@ export interface Place {
   category: PlaceCategory
   area: string
   description: string
+  latitude?: number
+  longitude?: number
+  address?: string
 }
 
 export interface TimeSlot {
