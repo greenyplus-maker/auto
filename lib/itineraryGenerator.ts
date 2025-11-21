@@ -48,14 +48,36 @@ export function generateItinerary(preferences: TripPreferences): Itinerary {
     : allPlaces
   
   const days: DayPlan[] = []
-  let placeIndex = 0
+  const usedPlaceIds = new Set<string>()
+  let availableIndex = 0
   
   for (let dayIndex = 0; dayIndex < daysCount; dayIndex++) {
     const dayPlaces: Place[] = []
     const slots: TimeSlot[] = []
     
     for (let slotIndex = 0; slotIndex < slotsPerDay; slotIndex++) {
-      const place = availablePlaces[placeIndex % availablePlaces.length]
+      // 사용되지 않은 장소 찾기
+      let place: Place | null = null
+      let attempts = 0
+      const maxAttempts = availablePlaces.length
+      
+      // 먼저 사용되지 않은 장소를 찾음
+      while (attempts < maxAttempts && !place) {
+        const candidate = availablePlaces[availableIndex % availablePlaces.length]
+        if (!usedPlaceIds.has(candidate.id)) {
+          place = candidate
+          usedPlaceIds.add(candidate.id)
+        }
+        availableIndex++
+        attempts++
+      }
+      
+      // 사용 가능한 장소가 없으면 모든 장소에서 선택 (중복 허용)
+      if (!place) {
+        place = availablePlaces[availableIndex % availablePlaces.length]
+        availableIndex++
+      }
+      
       dayPlaces.push(place)
       
       const label = timeSlotLabels[slotIndex % timeSlotLabels.length]
@@ -64,8 +86,6 @@ export function generateItinerary(preferences: TripPreferences): Itinerary {
         label,
         placeId: place.id,
       })
-      
-      placeIndex++
     }
     
     const summary = generateDaySummary(preferences.city, dayIndex, dayPlaces)
