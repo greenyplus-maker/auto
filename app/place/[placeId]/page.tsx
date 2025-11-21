@@ -33,12 +33,13 @@ export default function PlaceDetailPage() {
   
   // 모든 도시의 장소를 합쳐서 찾기
   const allCitiesPlaces = [
-    ...mockPlaces.tokyo,
-    ...mockPlaces.osaka,
-    ...mockPlaces.kyoto,
-    ...mockPlaces.fukuoka,
-    ...mockPlaces.hokkaido,
-    ...mockPlaces.okinawa,
+    ...(mockPlaces.tokyo || []),
+    ...(mockPlaces.osaka || []),
+    ...(mockPlaces.kyoto || []),
+    ...(mockPlaces.fukuoka || []),
+    ...(mockPlaces.hokkaido || []),
+    ...(mockPlaces.okinawa || []),
+    ...(mockPlaces.takamatsu || []),
   ]
   
   const place = allCitiesPlaces.find((p) => p.id === placeId)
