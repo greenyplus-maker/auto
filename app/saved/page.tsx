@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useItineraryStore } from '@/store/itineraryStore'
-import { useState } from 'react'
+import { useState, useTransition } from 'react'
 import { EditItineraryModal } from '@/components/EditItineraryModal'
 import { generateItinerary } from '@/lib/itineraryGenerator'
 import type { TripPreferences } from '@/types'
@@ -14,6 +14,8 @@ export default function SavedItinerariesPage() {
   const [editingId, setEditingId] = useState<string | null>(null)
   const [editTitle, setEditTitle] = useState<string>('')
   const [editingConditionsId, setEditingConditionsId] = useState<string | null>(null)
+  const [isUpdating, setIsUpdating] = useState(false)
+  const [isPending, startTransition] = useTransition()
 
   const handleLoad = (id: string) => {
     const itinerary = loadSavedItinerary(id)
@@ -63,22 +65,28 @@ export default function SavedItinerariesPage() {
     const saved = savedItineraries.find((si) => si.id === editingConditionsId)
     if (!saved) return
     
+    const targetId = editingConditionsId
+    const targetTitle = saved.title
+    
     // 모달 닫기 (즉시 UI 반응)
     setEditingConditionsId(null)
+    setIsUpdating(true)
     
-    // 무거운 작업을 비동기로 처리하여 메인 스레드 블로킹 방지
-    setTimeout(() => {
+    // useTransition을 사용하여 낮은 우선순위 업데이트로 처리
+    startTransition(() => {
       // 새로운 일정 생성
       const newItinerary = generateItinerary(preferences)
       
       // 저장된 일정 업데이트
-      updateSavedItinerary(editingConditionsId, newItinerary, saved.title)
+      updateSavedItinerary(targetId, newItinerary, targetTitle)
       
-      // 완료 알림
-      setTimeout(() => {
+      setIsUpdating(false)
+      
+      // 완료 알림 (다음 틱에서 실행)
+      requestAnimationFrame(() => {
         alert('일정 조건이 수정되었습니다.')
-      }, 0)
-    }, 0)
+      })
+    })
   }
 
   const formatDate = (dateString: string) => {
@@ -239,6 +247,18 @@ export default function SavedItinerariesPage() {
           />
         )
       })()}
+      
+      {/* 업데이트 중 오버레이 */}
+      {(isPending || isUpdating) && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 z-50 flex items-center justify-center">
+          <div className="bg-white rounded-[16px] p-6 md:p-8 max-w-sm w-full mx-4">
+            <div className="text-center">
+              <div className="inline-block w-8 h-8 border-4 border-gray-300 border-t-black rounded-full animate-spin mb-4"></div>
+              <p className="text-base md:text-lg font-medium">일정을 재생성하는 중...</p>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   )
 }
