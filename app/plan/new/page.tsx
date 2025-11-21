@@ -80,7 +80,7 @@ export default function NewPlanPage() {
             <select
               value={formData.city}
               onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-              className="w-full border border-gray-400 px-4 py-3 md:py-2 bg-white text-base md:text-sm touch-manipulation"
+              className="w-full"
               required
             >
               <option value="">선택하세요</option>
@@ -99,7 +99,7 @@ export default function NewPlanPage() {
                 type="date"
                 value={formData.startDate}
                 onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
-                className="w-full border border-gray-400 px-4 py-3 md:py-2 bg-white text-base md:text-sm touch-manipulation"
+                className="w-full"
                 required
               />
             </div>
@@ -109,7 +109,7 @@ export default function NewPlanPage() {
                 type="date"
                 value={formData.endDate}
                 onChange={(e) => setFormData({ ...formData, endDate: e.target.value })}
-                className="w-full border border-gray-400 px-4 py-3 md:py-2 bg-white text-base md:text-sm touch-manipulation"
+                className="w-full"
                 required
               />
             </div>
@@ -122,7 +122,7 @@ export default function NewPlanPage() {
               min="1"
               value={formData.adults}
               onChange={(e) => setFormData({ ...formData, adults: parseInt(e.target.value) || 1 })}
-              className="w-full border border-gray-400 px-4 py-3 md:py-2 bg-white text-base md:text-sm touch-manipulation"
+              className="w-full"
             />
           </div>
           
@@ -133,7 +133,7 @@ export default function NewPlanPage() {
               min="0"
               value={formData.children}
               onChange={(e) => setFormData({ ...formData, children: parseInt(e.target.value) || 0 })}
-              className="w-full border border-gray-400 px-4 py-3 md:py-2 bg-white text-base md:text-sm touch-manipulation"
+              className="w-full"
             />
           </div>
           
@@ -143,7 +143,7 @@ export default function NewPlanPage() {
               <select
                 value={formData.childAgeGroup}
                 onChange={(e) => setFormData({ ...formData, childAgeGroup: e.target.value as any })}
-                className="w-full border border-gray-400 px-4 py-3 md:py-2 bg-white text-base md:text-sm touch-manipulation"
+                className="w-full"
               >
                 <option value="under6">6세 미만</option>
                 <option value="6to12">6-12세</option>
@@ -157,7 +157,7 @@ export default function NewPlanPage() {
             <select
               value={formData.style}
               onChange={(e) => setFormData({ ...formData, style: e.target.value as any })}
-              className="w-full border border-gray-400 px-4 py-3 md:py-2 bg-white text-base md:text-sm touch-manipulation"
+              className="w-full"
             >
               <option value="relaxed">여유롭게</option>
               <option value="normal">보통</option>
@@ -187,7 +187,7 @@ export default function NewPlanPage() {
             <select
               value={formData.budget}
               onChange={(e) => setFormData({ ...formData, budget: e.target.value as any })}
-              className="w-full border border-gray-400 px-4 py-3 md:py-2 bg-white text-base md:text-sm touch-manipulation"
+              className="w-full"
             >
               <option value="low">낮음</option>
               <option value="medium">보통</option>

@@ -32,3 +32,66 @@ input, select, textarea {
   }
 }
 
+/* 공통 인풋 스타일 */
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="email"],
+input[type="password"],
+select,
+textarea {
+  height: 40px;
+  border-radius: 4px;
+  border: 1px solid #999999;
+  padding: 0 16px;
+  background-color: white;
+  font-size: 16px;
+  transition: border-color 0.2s;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* 체크박스와 라디오는 제외 */
+input[type="checkbox"],
+input[type="radio"] {
+  height: auto;
+  width: auto;
+  border-radius: 0;
+  padding: 0;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: black;
+}
+
+/* Select 화살표 스타일링 */
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23000000' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 40px;
+}
+
+textarea {
+  height: auto;
+  min-height: 100px;
+  padding-top: 12px;
+  padding-bottom: 12px;
+  resize: none;
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  background-color: #f3f3f3;
+  color: #808080;
+  cursor: not-allowed;
+}
+
