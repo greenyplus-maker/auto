@@ -14,7 +14,17 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [itemsPerView, setItemsPerView] = useState(1)
   const [isDesktop, setIsDesktop] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
+  
+  // 첫 접속 여부 확인 및 그리팅 페이지로 리다이렉트
+  useEffect(() => {
+    setMounted(true)
+    const hasVisitedGreeting = localStorage.getItem('hasVisitedGreeting')
+    if (!hasVisitedGreeting) {
+      router.push('/greeting')
+    }
+  }, [router])
   
   useEffect(() => {
     const updateItemsPerView = () => {
@@ -118,6 +128,10 @@ export default function Home() {
     const itemWidth = 280 + 16
     const targetScrollLeft = index * itemWidth
     container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' })
+  }
+  
+  if (!mounted) {
+    return null
   }
   
   return (
