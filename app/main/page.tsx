@@ -7,7 +7,7 @@ import { useItineraryStore } from '@/store/itineraryStore'
 import { generateRecommendedItineraries } from '@/lib/recommendedItineraries'
 import { getPlacesByCity, getPopularJapanSpots } from '@/lib/mockData'
 import type { Place } from '@/types'
-import { characterMetadata } from '@/lib/travelCharacter'
+import { characterMetadata, characterCards } from '@/lib/travelCharacter'
 
 export default function MainPage() {
   const router = useRouter()
@@ -136,6 +136,7 @@ export default function MainPage() {
         
         {onboardingCharacter && (() => {
           const character = characterMetadata[onboardingCharacter]
+          const cards = characterCards[onboardingCharacter]
           return (
             <div className="mb-6 md:mb-8 border border-gray-300 rounded-[16px] p-4 md:p-5 bg-gray-50 flex flex-col gap-4">
               <div className="flex items-start gap-4">
@@ -148,12 +149,19 @@ export default function MainPage() {
                   </p>
                 </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {character.hashtags.map((tag) => (
-                  <span key={tag} className="text-xs md:text-sm px-3 py-1 bg-white border border-gray-200 rounded-full text-gray-600">
-                    {tag}
-                  </span>
-                ))}
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className="bg-white border border-gray-200 rounded-[12px] p-3">
+                  <p className="text-xs font-semibold text-gray-500 mb-1">여행의 시작</p>
+                  <p className="text-sm text-gray-800 leading-snug">{cards.start}</p>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-[12px] p-3">
+                  <p className="text-xs font-semibold text-gray-500 mb-1">여행의 느낌</p>
+                  <p className="text-sm text-gray-800 leading-snug">{cards.mood}</p>
+                </div>
+                <div className="bg-white border border-gray-200 rounded-[12px] p-3">
+                  <p className="text-xs font-semibold text-gray-500 mb-1">여행의 디테일</p>
+                  <p className="text-sm text-gray-800 leading-snug">{cards.detail}</p>
+                </div>
               </div>
               <div>
                 <button

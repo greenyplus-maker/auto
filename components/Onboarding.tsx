@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useItineraryStore } from '@/store/itineraryStore'
 import type { TravelStyle, Budget, ChildAgeGroup, TravelGroupType } from '@/types'
-import { decideCharacter, characterMetadata } from '@/lib/travelCharacter'
+import { decideCharacter, characterMetadata, characterCards } from '@/lib/travelCharacter'
 
 const travelGroupTypes = [
   { value: 'family', label: '가족', adults: 2, children: 0, allowChildren: true, minAdults: 2, maxAdults: 4 },
@@ -368,7 +368,7 @@ export function Onboarding() {
             <p className="text-sm md:text-base text-gray-600 mb-6">
               선택하신 정보를 확인해주세요
             </p>
-            <div className="border border-gray-300 p-4 rounded-[16px] bg-gray-50 space-y-3">
+            <div className="border border-gray-300 p-4 rounded-[16px] bg-gray-50 space-y-4">
               <div className="flex items-center gap-3">
                 <span className="text-2xl">{characterInfo.icon}</span>
                 <div>
@@ -379,16 +379,25 @@ export function Onboarding() {
               <p className="text-sm md:text-base text-gray-700 leading-relaxed">
                 {characterInfo.description}
               </p>
-              <div className="flex flex-wrap gap-2">
-                {characterInfo.hashtags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs md:text-sm px-2.5 py-1 bg-white border border-gray-200 rounded-full text-gray-600"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+              {(() => {
+                const cards = characterCards[characterType]
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="bg-white border border-gray-200 rounded-[12px] p-3">
+                      <p className="text-xs font-semibold text-gray-500 mb-1">여행의 시작</p>
+                      <p className="text-sm text-gray-800 leading-snug">{cards.start}</p>
+                    </div>
+                    <div className="bg-white border border-gray-200 rounded-[12px] p-3">
+                      <p className="text-xs font-semibold text-gray-500 mb-1">여행의 느낌</p>
+                      <p className="text-sm text-gray-800 leading-snug">{cards.mood}</p>
+                    </div>
+                    <div className="bg-white border border-gray-200 rounded-[12px] p-3">
+                      <p className="text-xs font-semibold text-gray-500 mb-1">여행의 디테일</p>
+                      <p className="text-sm text-gray-800 leading-snug">{cards.detail}</p>
+                    </div>
+                  </div>
+                )
+              })()}
             </div>
             <div className="space-y-4">
               <div className="border border-gray-300 p-4 rounded-[16px]">
