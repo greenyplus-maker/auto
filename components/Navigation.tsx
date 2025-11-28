@@ -46,7 +46,7 @@ export function Navigation() {
       <div className="max-w-6xl mx-auto px-4 md:px-8">
         <div className="flex items-center justify-between h-14 md:h-16">
           <Link 
-            href="/" 
+            href="/main" 
             className="text-base md:text-lg font-bold hover:text-gray-600 transition-colors py-2 px-2 -ml-2"
             onClick={handleLinkClick}
           >
