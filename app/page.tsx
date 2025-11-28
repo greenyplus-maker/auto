@@ -15,15 +15,18 @@ export default function Home() {
   const [itemsPerView, setItemsPerView] = useState(1)
   const [isDesktop, setIsDesktop] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [shouldRedirect, setShouldRedirect] = useState(true)
   const scrollContainerRef = useRef<HTMLDivElement>(null)
   
   // 첫 접속 여부 확인 및 그리팅 페이지로 리다이렉트
   useEffect(() => {
-    setMounted(true)
     const hasVisitedGreeting = localStorage.getItem('hasVisitedGreeting')
     if (!hasVisitedGreeting) {
-      router.push('/greeting')
+      router.replace('/greeting')
+      return
     }
+    setShouldRedirect(false)
+    setMounted(true)
   }, [router])
   
   useEffect(() => {
@@ -130,7 +133,8 @@ export default function Home() {
     container.scrollTo({ left: targetScrollLeft, behavior: 'smooth' })
   }
   
-  if (!mounted) {
+  // 첫 접속 시 그리팅 페이지로 리다이렉트 중이면 아무것도 렌더링하지 않음
+  if (shouldRedirect || !mounted) {
     return null
   }
   
