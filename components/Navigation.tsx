@@ -12,7 +12,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { href: '/', label: '홈', showWhen: 'always' },
+  { href: '/main', label: '홈', showWhen: 'always' },
   { href: '/plan/new', label: '새 일정', showWhen: 'always' },
   { href: '/plan', label: '일정 보기', showWhen: 'hasItinerary' },
   { href: '/plan/share', label: '공유', showWhen: 'hasItinerary' },

@@ -12,25 +12,18 @@ export default function GreetingPage() {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
 
-  const markGreetingVisited = () => {
-    localStorage.setItem('hasVisitedGreeting', 'true')
-  }
-
   const handleStartOnboarding = () => {
-    markGreetingVisited()
     resetOnboarding()
-    router.push('/')
+    router.push('/main')
   }
 
   const handleGoToMain = () => {
-    markGreetingVisited()
-    router.push('/')
+    router.push('/main')
   }
 
   const handleGuestMode = () => {
     // 게스트 모드로 진행 - 홈으로 이동
-    markGreetingVisited()
-    router.push('/')
+    router.push('/main')
   }
 
   const handleLogin = async (e: React.FormEvent) => {
