@@ -134,18 +134,38 @@ export default function MainPage() {
           </p>
         </div>
         
-        {onboardingCharacter && (
-          <div className="mb-6 md:mb-8 border border-gray-300 rounded-[16px] p-4 md:p-5 bg-gray-50 flex items-start gap-4">
-            <div className="text-3xl" aria-hidden>{characterMetadata[onboardingCharacter].icon}</div>
-            <div>
-              <p className="text-xs md:text-sm text-gray-500 mb-1">나의 여행 캐릭터</p>
-              <p className="text-base md:text-lg font-semibold">{characterMetadata[onboardingCharacter].name}</p>
-              <p className="text-sm md:text-base text-gray-700 leading-relaxed">
-                {characterMetadata[onboardingCharacter].description}
-              </p>
+        {onboardingCharacter && (() => {
+          const character = characterMetadata[onboardingCharacter]
+          return (
+            <div className="mb-6 md:mb-8 border border-gray-300 rounded-[16px] p-4 md:p-5 bg-gray-50 flex flex-col gap-4">
+              <div className="flex items-start gap-4">
+                <div className="text-3xl" aria-hidden>{character.icon}</div>
+                <div>
+                  <p className="text-xs md:text-sm text-gray-500 mb-1">나의 여행 캐릭터</p>
+                  <p className="text-base md:text-lg font-semibold">{character.name}</p>
+                  <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+                    {character.description}
+                  </p>
+                </div>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {character.hashtags.map((tag) => (
+                  <span key={tag} className="text-xs md:text-sm px-3 py-1 bg-white border border-gray-200 rounded-full text-gray-600">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <div>
+                <button
+                  onClick={resetOnboarding}
+                  className="px-4 py-2 text-xs md:text-sm font-medium border border-gray-400 rounded-[8px] hover:bg-white transition-colors touch-manipulation text-gray-700"
+                >
+                  취향 다시 설정하기
+                </button>
+              </div>
             </div>
-          </div>
-        )}
+          )
+        })()}
         
         {recommendedItineraries.length > 0 && (
           <div className="mb-8 md:mb-10">

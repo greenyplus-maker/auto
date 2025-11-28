@@ -368,17 +368,27 @@ export function Onboarding() {
             <p className="text-sm md:text-base text-gray-600 mb-6">
               선택하신 정보를 확인해주세요
             </p>
-            <div className="border border-gray-300 p-4 rounded-[16px] bg-gray-50">
-              <div className="flex items-center gap-3 mb-2">
+            <div className="border border-gray-300 p-4 rounded-[16px] bg-gray-50 space-y-3">
+              <div className="flex items-center gap-3">
                 <span className="text-2xl">{characterInfo.icon}</span>
                 <div>
-                  <p className="text-xs md:text-sm text-gray-500">여행 캐릭터</p>
+                  <p className="text-xs md:text-sm text-gray-500">나의 여행 캐릭터</p>
                   <h3 className="text-base md:text-lg font-semibold">{characterInfo.name}</h3>
                 </div>
               </div>
               <p className="text-sm md:text-base text-gray-700 leading-relaxed">
                 {characterInfo.description}
               </p>
+              <div className="flex flex-wrap gap-2">
+                {characterInfo.hashtags.map((tag) => (
+                  <span
+                    key={tag}
+                    className="text-xs md:text-sm px-2.5 py-1 bg-white border border-gray-200 rounded-full text-gray-600"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
             </div>
             <div className="space-y-4">
               <div className="border border-gray-300 p-4 rounded-[16px]">
