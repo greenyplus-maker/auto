@@ -279,16 +279,6 @@ export default function MainPage() {
                 </div>
               )
             })()}
-            
-            {/* 온보딩 다시보기 버튼 */}
-            <div className="mt-4 md:mt-6">
-              <button
-                onClick={handleShowOnboarding}
-                className="block w-full text-center border border-gray-400 px-6 py-3 md:py-2 text-sm md:text-sm font-medium hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation text-gray-600"
-              >
-                온보딩 다시보기
-              </button>
-            </div>
           </div>
         )}
         
@@ -322,12 +312,6 @@ export default function MainPage() {
             <p className="text-sm md:text-base text-gray-600 mb-4">
               간단한 몇 가지 질문에 답하시면 됩니다.
             </p>
-            <button
-              onClick={handleShowOnboarding}
-              className="block w-full text-center border border-gray-400 px-6 py-3 md:py-2 text-sm md:text-sm font-medium hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation text-gray-600"
-            >
-              온보딩 다시보기
-            </button>
           </div>
         )}
         
