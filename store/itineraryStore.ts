@@ -3,6 +3,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 import type { Itinerary, TripPreferences, Place } from '@/types'
+import type { CharacterType } from '@/lib/travelCharacter'
 
 interface OnboardingPreferences {
   style: string | null
@@ -28,6 +29,7 @@ interface ItineraryState {
   onboardingCompleted: boolean
   showOnboarding: boolean
   onboardingPreferences: OnboardingPreferences | null
+  onboardingCharacter: CharacterType | null
   favoritePlaces: Place[]
   savedItineraries: SavedItinerary[]
   setPreferences: (preferences: TripPreferences) => void
@@ -37,6 +39,7 @@ interface ItineraryState {
   completeOnboarding: () => void
   resetOnboarding: () => void
   setOnboardingPreferences: (preferences: OnboardingPreferences) => void
+  setOnboardingCharacter: (character: CharacterType | null) => void
   addFavoritePlace: (place: Place) => void
   removeFavoritePlace: (placeId: string) => void
   isFavoritePlace: (placeId: string) => boolean
@@ -55,6 +58,7 @@ export const useItineraryStore = create<ItineraryState>()(
       onboardingCompleted: false,
       showOnboarding: false,
       onboardingPreferences: null,
+      onboardingCharacter: null,
       favoritePlaces: [],
       savedItineraries: [],
       setPreferences: (preferences) => set({ preferences }),
@@ -62,8 +66,9 @@ export const useItineraryStore = create<ItineraryState>()(
       updateItinerary: (itinerary) => set({ itinerary }),
       clearItinerary: () => set({ itinerary: null, preferences: null }),
       completeOnboarding: () => set({ onboardingCompleted: true, showOnboarding: false }),
-      resetOnboarding: () => set({ onboardingCompleted: false, showOnboarding: true }),
+      resetOnboarding: () => set({ onboardingCompleted: false, showOnboarding: true, onboardingCharacter: null }),
       setOnboardingPreferences: (preferences) => set({ onboardingPreferences: preferences }),
+      setOnboardingCharacter: (character) => set({ onboardingCharacter: character }),
       addFavoritePlace: (place) => {
         const { favoritePlaces } = get()
         if (!favoritePlaces.find((p) => p.id === place.id)) {

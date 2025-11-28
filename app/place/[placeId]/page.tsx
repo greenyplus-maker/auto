@@ -44,7 +44,7 @@ export default function PlaceDetailPage() {
   const place = allCitiesPlaces.find((p) => p.id === placeId)
   
   if (!place) {
-    router.push('/')
+    router.push('/main')
     return null
   }
   

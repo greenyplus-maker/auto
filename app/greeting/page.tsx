@@ -34,7 +34,7 @@ export default function GreetingPage() {
     // 현재는 임시로 홈으로 이동
     setTimeout(() => {
       setIsLoading(false)
-      router.push('/')
+      router.push('/main')
     }, 500)
   }
 

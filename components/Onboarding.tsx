@@ -1,9 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useItineraryStore } from '@/store/itineraryStore'
 import type { TravelStyle, Budget, ChildAgeGroup, TravelGroupType } from '@/types'
+import { decideCharacter, characterMetadata } from '@/lib/travelCharacter'
 
 const travelGroupTypes = [
   { value: 'family', label: '가족', adults: 2, children: 0, allowChildren: true, minAdults: 2, maxAdults: 4 },
@@ -36,7 +37,7 @@ const cities = ['도쿄', '오사카', '교토', '후쿠오카', '홋카이도',
 
 export function Onboarding() {
   const router = useRouter()
-  const { onboardingCompleted, showOnboarding, completeOnboarding, setOnboardingPreferences } = useItineraryStore()
+  const { onboardingCompleted, showOnboarding, completeOnboarding, setOnboardingPreferences, setOnboardingCharacter } = useItineraryStore()
   const [currentStep, setCurrentStep] = useState(0)
   const [mounted, setMounted] = useState(false)
   const [shouldShow, setShouldShow] = useState(false)
@@ -50,6 +51,8 @@ export function Onboarding() {
     groupType: null,
     city: null,
   })
+  const characterType = useMemo(() => decideCharacter(preferences), [preferences])
+  const characterInfo = characterMetadata[characterType]
   
   useEffect(() => {
     setMounted(true)
@@ -97,8 +100,9 @@ export function Onboarding() {
   const handleComplete = () => {
     // 수집한 취향 정보 저장
     setOnboardingPreferences(preferences)
+    setOnboardingCharacter(characterType)
     completeOnboarding()
-    router.push('/')
+    router.push('/main')
   }
   
   const handleInterestToggle = (interest: string) => {
@@ -364,6 +368,18 @@ export function Onboarding() {
             <p className="text-sm md:text-base text-gray-600 mb-6">
               선택하신 정보를 확인해주세요
             </p>
+            <div className="border border-gray-300 p-4 rounded-[16px] bg-gray-50">
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-2xl">{characterInfo.icon}</span>
+                <div>
+                  <p className="text-xs md:text-sm text-gray-500">여행 캐릭터</p>
+                  <h3 className="text-base md:text-lg font-semibold">{characterInfo.name}</h3>
+                </div>
+              </div>
+              <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+                {characterInfo.description}
+              </p>
+            </div>
             <div className="space-y-4">
               <div className="border border-gray-300 p-4 rounded-[16px]">
                 <h3 className="text-sm md:text-base font-semibold mb-2">여행 스타일</h3>

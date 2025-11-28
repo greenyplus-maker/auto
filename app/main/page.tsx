@@ -7,10 +7,11 @@ import { useItineraryStore } from '@/store/itineraryStore'
 import { generateRecommendedItineraries } from '@/lib/recommendedItineraries'
 import { getPlacesByCity, getPopularJapanSpots } from '@/lib/mockData'
 import type { Place } from '@/types'
+import { characterMetadata } from '@/lib/travelCharacter'
 
 export default function MainPage() {
   const router = useRouter()
-  const { resetOnboarding, onboardingPreferences, onboardingCompleted, setItinerary, setPreferences } = useItineraryStore()
+  const { resetOnboarding, onboardingPreferences, onboardingCompleted, setItinerary, setPreferences, onboardingCharacter } = useItineraryStore()
   const [currentIndex, setCurrentIndex] = useState(0)
   const [itemsPerView, setItemsPerView] = useState(1)
   const [isDesktop, setIsDesktop] = useState(false)
@@ -132,6 +133,19 @@ export default function MainPage() {
             도시, 날짜, 여행 스타일, 관심사 등을 바탕으로 최적의 일정을 제안합니다.
           </p>
         </div>
+        
+        {onboardingCharacter && (
+          <div className="mb-6 md:mb-8 border border-gray-300 rounded-[16px] p-4 md:p-5 bg-gray-50 flex items-start gap-4">
+            <div className="text-3xl" aria-hidden>{characterMetadata[onboardingCharacter].icon}</div>
+            <div>
+              <p className="text-xs md:text-sm text-gray-500 mb-1">나의 여행 캐릭터</p>
+              <p className="text-base md:text-lg font-semibold">{characterMetadata[onboardingCharacter].name}</p>
+              <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+                {characterMetadata[onboardingCharacter].description}
+              </p>
+            </div>
+          </div>
+        )}
         
         {recommendedItineraries.length > 0 && (
           <div className="mb-8 md:mb-10">
