@@ -3,7 +3,6 @@
 import { useParams, useRouter } from 'next/navigation'
 import { useItineraryStore } from '@/store/itineraryStore'
 import { mockPlaces, getPlacesByCity } from '@/lib/mockData'
-import { Breadcrumb } from '@/components/Breadcrumb'
 import { BackButton } from '@/components/BackButton'
 import type { TimeSlot } from '@/types'
 
@@ -61,12 +60,6 @@ export default function DayDetailPage() {
     <main className="min-h-screen p-4 md:p-8">
       <div className="max-w-3xl mx-auto">
         <BackButton href="/plan" label="일정 보기로" />
-        <Breadcrumb
-          items={[
-            { label: '일정 보기', href: '/plan' },
-            { label: `Day ${dayIndex + 1}` },
-          ]}
-        />
         <div className="border-b border-gray-300 pb-4 md:pb-6 mb-6 md:mb-8">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 leading-tight">Day {dayIndex + 1}</h1>
           <p className="text-sm md:text-base text-gray-600">{day.summary}</p>

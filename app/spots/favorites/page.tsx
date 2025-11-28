@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { useItineraryStore } from '@/store/itineraryStore'
-import { Breadcrumb } from '@/components/Breadcrumb'
 import { BackButton } from '@/components/BackButton'
 import type { PlaceCategory, Place } from '@/types'
 
@@ -78,11 +77,6 @@ export default function FavoriteSpotsPage() {
     <main className="min-h-screen p-4 md:p-8">
       <div className="max-w-2xl mx-auto">
         <BackButton href="/" label="홈으로" />
-        <Breadcrumb
-          items={[
-            { label: '관심 스팟' },
-          ]}
-        />
         <div className="border-b border-gray-300 pb-4 md:pb-6 mb-6 md:mb-8">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 leading-tight">관심 스팟</h1>
           <p className="text-sm md:text-base text-gray-600">

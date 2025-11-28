@@ -4,13 +4,13 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useItineraryStore } from '@/store/itineraryStore'
 import { getPlacesByCity } from '@/lib/mockData'
-import { Breadcrumb } from '@/components/Breadcrumb'
 import { BackButton } from '@/components/BackButton'
 
 export default function SharePage() {
   const router = useRouter()
   const { itinerary, preferences } = useItineraryStore()
-  const [copied, setCopied] = useState(false)
+  const [copiedText, setCopiedText] = useState(false)
+  const [copiedLink, setCopiedLink] = useState(false)
   
   useEffect(() => {
     if (!itinerary || !preferences) {
@@ -62,54 +62,117 @@ export default function SharePage() {
     return text
   }
   
-  const handleCopy = async () => {
+  const handleCopyText = async () => {
     const text = generateText()
     try {
       await navigator.clipboard.writeText(text)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setCopiedText(true)
+      setTimeout(() => setCopiedText(false), 2000)
     } catch (err) {
       alert('복사에 실패했습니다.')
     }
   }
-  
-  const textContent = generateText()
+
+  const handleCopyLink = async () => {
+    const currentUrl = window.location.origin + '/plan'
+    try {
+      await navigator.clipboard.writeText(currentUrl)
+      setCopiedLink(true)
+      setTimeout(() => setCopiedLink(false), 2000)
+    } catch (err) {
+      alert('링크 복사에 실패했습니다.')
+    }
+  }
   
   return (
     <main className="min-h-screen p-4 md:p-8">
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
         <BackButton href="/plan" label="일정 보기로" />
-        <Breadcrumb
-          items={[
-            { label: '일정 보기', href: '/plan' },
-            { label: '공유' },
-          ]}
-        />
         <div className="border-b border-gray-300 pb-4 md:pb-6 mb-6 md:mb-8">
           <h1 className="text-xl md:text-2xl lg:text-3xl font-bold mb-2 leading-tight">일정 공유</h1>
-          <p className="text-sm md:text-base text-gray-600">일정을 텍스트로 복사하여 공유하세요.</p>
+          <p className="text-sm md:text-base text-gray-600">일정을 공유하거나 텍스트로 복사할 수 있습니다.</p>
         </div>
         
-        <div className="border border-gray-300 p-4 md:p-6 bg-gray-50 overflow-x-auto mb-20 md:mb-24 rounded-[16px]">
-          <pre className="whitespace-pre-wrap text-xs md:text-sm font-mono text-gray-800 leading-relaxed">
-            {textContent}
-          </pre>
+        {/* 일정 정보 블록 */}
+        <div className="space-y-4 md:space-y-6 mb-6 md:mb-8">
+          {/* 기본 정보 */}
+          <div className="border border-gray-300 p-4 md:p-6 rounded-[16px]">
+            <h2 className="text-base md:text-lg font-semibold mb-4">여행 정보</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs md:text-sm text-gray-500 mb-1">도시</p>
+                <p className="text-sm md:text-base font-medium">{itinerary.city}</p>
+              </div>
+              <div>
+                <p className="text-xs md:text-sm text-gray-500 mb-1">기간</p>
+                <p className="text-sm md:text-base font-medium">{itinerary.startDate} ~ {itinerary.endDate}</p>
+              </div>
+              <div>
+                <p className="text-xs md:text-sm text-gray-500 mb-1">인원</p>
+                <p className="text-sm md:text-base font-medium">
+                  성인 {preferences.adults}명
+                  {preferences.children > 0 && ` · 아이 ${preferences.children}명`}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs md:text-sm text-gray-500 mb-1">여행 스타일</p>
+                <p className="text-sm md:text-base font-medium">
+                  {preferences.style === 'relaxed' ? '여유롭게' : preferences.style === 'normal' ? '보통' : '빡빡하게'}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs md:text-sm text-gray-500 mb-1">예산</p>
+                <p className="text-sm md:text-base font-medium">
+                  {preferences.budget === 'low' ? '저예산' : preferences.budget === 'medium' ? '보통' : '고예산'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* 일별 일정 */}
+          {itinerary.days.map((day) => {
+            const dayPlaces = day.slots.map(slot => placeMap.get(slot.placeId)).filter(Boolean)
+            return (
+              <div key={day.index} className="border border-gray-300 p-4 md:p-6 rounded-[16px]">
+                <h2 className="text-base md:text-lg font-semibold mb-3">
+                  Day {day.index + 1}: {day.summary}
+                </h2>
+                <div className="space-y-3">
+                  {day.slots.map((slot, slotIndex) => {
+                    const place = placeMap.get(slot.placeId)
+                    if (!place) return null
+                    return (
+                      <div key={slot.id} className="border-l-2 border-gray-300 pl-4 py-2">
+                        <p className="text-xs md:text-sm text-gray-500 mb-1">{slot.label}</p>
+                        <p className="text-sm md:text-base font-medium mb-1">{place.name}</p>
+                        <p className="text-xs md:text-sm text-gray-600">{place.area} · {place.description}</p>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )
+          })}
         </div>
-        
-        {/* 플로팅 CTA 버튼 */}
-        <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-300 p-4 md:p-6 z-50">
-          <div className="max-w-3xl mx-auto">
+
+        {/* 공유 옵션 */}
+        <div className="border border-gray-300 p-4 md:p-6 rounded-[16px] mb-20 md:mb-24">
+          <h2 className="text-base md:text-lg font-semibold mb-4">공유하기</h2>
+          <div className="space-y-3">
             <button
-              onClick={handleCopy}
-              className="w-full bg-black text-white px-6 py-4 md:px-8 md:py-3 text-base md:text-lg font-medium hover:bg-gray-800 active:bg-gray-900 transition-colors touch-manipulation rounded-[8px]"
+              onClick={handleCopyLink}
+              className="w-full border border-black px-4 py-3 md:py-2 text-sm md:text-base font-medium hover:bg-black hover:text-white active:bg-gray-800 transition-colors touch-manipulation rounded-[8px] flex items-center justify-center gap-2"
             >
-              {copied ? '복사됨!' : '클립보드에 복사'}
+              <span>{copiedLink ? '✓ 링크 복사됨!' : '🔗 링크 복사'}</span>
+            </button>
+            <button
+              onClick={handleCopyText}
+              className="w-full border border-gray-400 px-4 py-3 md:py-2 text-sm md:text-base font-medium hover:bg-gray-100 active:bg-gray-200 transition-colors touch-manipulation rounded-[8px] flex items-center justify-center gap-2"
+            >
+              <span>{copiedText ? '✓ 텍스트 복사됨!' : '📋 텍스트로 복사'}</span>
             </button>
           </div>
         </div>
-        
-        {/* 플로팅 버튼 공간 확보 */}
-        <div className="h-20 md:h-24" />
       </div>
     </main>
   )
