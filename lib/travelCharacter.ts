@@ -29,44 +29,58 @@ interface CharacterMeta {
   description: string
   icon: string
   tags: string[]
+  characterName: string
+  features: string
 }
 
 export const characterMetadata: Record<CharacterType, CharacterMeta> = {
   PLANNER: {
     name: '디테일 플래너',
     description: '여행은 스케줄링부터 시작! 계획표가 딱딱 맞아떨어질 때 가장 뿌듯한 타입.',
-    icon: '🗂️',
+    icon: '📋',
     tags: ['#계획왕', '#빈틈없음', '#동선장인', '#하루풀활용', '#정리잘함'],
+    characterName: '꼼보',
+    features: '정확·정리·계획·꼼꼼함',
   },
   HEALER: {
     name: '힐링 메이커',
-    description: '“쉬려고 왔는데 왜 뛰어?” 여유·힐링·호캉스를 가장 사랑하는 부드러운 여행러.',
+    description: '"쉬려고 왔는데 왜 뛰어?" 여유·힐링·호캉스를 가장 사랑하는 부드러운 여행러.',
     icon: '🌿',
     tags: ['#여유필수', '#호캉스러버', '#조용한곳좋아', '#슬로우트래블', '#편안한여행'],
+    characterName: '포노',
+    features: '포근함·휴식·힐링·조용한 무드',
   },
   DISCOVERER: {
     name: '발견가',
     description: '지도에 없는 골목, 처음 보는 가게… 새로운 분위기를 향해 자연스럽게 발길이 가는 탐험러.',
     icon: '🧭',
     tags: ['#로컬탐험', '#새로운공간', '#분위기찾기', '#골목여행', '#감성스팟헌터'],
+    characterName: '누비',
+    features: '탐험·발견·로컬·새로운 경험',
   },
   FOODIE: {
     name: '미식 러버',
     description: '일정의 중심은 맛집부터! 한 끼 잘 먹으면 여행이 이미 완성이라고 생각하는 타입.',
-    icon: '🍣',
+    icon: '🍜',
     tags: ['#맛집1순위', '#카페투어', '#먹으러가는여행', '#로컬맛', '#식도락러버'],
+    characterName: '냠코',
+    features: '맛집·카페·먹거리 중심 여행',
   },
   FAMILY_KEEPER: {
     name: '패밀리 가디언',
-    description: "내 여행의 기준은 ‘우리 가족이 편한가?’ 모두가 즐겁고 무리 없는 일정이 좋은 따뜻한 여행러.",
-    icon: '👨‍👩‍👧‍👦',
+    description: "내 여행의 기준은 '우리 가족이 편한가?' 모두가 즐겁고 무리 없는 일정이 좋은 따뜻한 여행러.",
+    icon: '🧸',
     tags: ['#가족중심', '#아이와여행', '#안정적인동선', '#편안한코스', '#따뜻한여행러'],
+    characterName: '다솜',
+    features: '가족·안정·아이동선·따뜻함',
   },
   ACTIVE: {
     name: '액티브 블루머',
     description: '하루 종일 돌아다녀도 에너지 풀충전! 테마파크·액티비티·야외 스폿에 진심인 활동파.',
-    icon: '🎢',
+    icon: '🔥',
     tags: ['#움직여야행복해', '#테마파크러버', '#액티비티매니아', '#활동파여행', '#에너지뿜뿜'],
+    characterName: '쑥쑥',
+    features: '활동·속도감·테마파크·야외',
   },
 }
 
