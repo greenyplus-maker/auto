@@ -36,7 +36,7 @@ interface CharacterMeta {
 export const characterMetadata: Record<CharacterType, CharacterMeta> = {
   PLANNER: {
     name: '디테일 플래너',
-    description: '여행은 스케줄링부터 시작! 계획표가 딱딱 맞아떨어질 때 가장 뿌듯한 타입.',
+    description: '나는 꼼꼼한 스타일이라, 너 여행 갈 때도 빈틈없이 딱 맞게 챙겨줄게!',
     icon: '📋',
     tags: ['#계획왕', '#빈틈없음', '#동선장인', '#하루풀활용', '#정리잘함'],
     characterName: '꼼보',
@@ -44,7 +44,7 @@ export const characterMetadata: Record<CharacterType, CharacterMeta> = {
   },
   HEALER: {
     name: '힐링 메이커',
-    description: '"쉬려고 왔는데 왜 뛰어?" 여유·힐링·호캉스를 가장 사랑하는 부드러운 여행러.',
+    description: '난 편안한 게 제일 좋아. 너 여행도 무리 없고 여유 있게 만들어줄게.',
     icon: '🌿',
     tags: ['#여유필수', '#호캉스러버', '#조용한곳좋아', '#슬로우트래블', '#편안한여행'],
     characterName: '포노',
@@ -52,7 +52,7 @@ export const characterMetadata: Record<CharacterType, CharacterMeta> = {
   },
   DISCOVERER: {
     name: '발견가',
-    description: '지도에 없는 골목, 처음 보는 가게… 새로운 분위기를 향해 자연스럽게 발길이 가는 탐험러.',
+    description: '난 새로운 곳 찾아다니는 거 좋아하거든! 너 여행도 감성 스팟 위주로 재밌게 짜줄게.',
     icon: '🧭',
     tags: ['#로컬탐험', '#새로운공간', '#분위기찾기', '#골목여행', '#감성스팟헌터'],
     characterName: '누비',
@@ -60,7 +60,7 @@ export const characterMetadata: Record<CharacterType, CharacterMeta> = {
   },
   FOODIE: {
     name: '미식 러버',
-    description: '일정의 중심은 맛집부터! 한 끼 잘 먹으면 여행이 이미 완성이라고 생각하는 타입.',
+    description: '나는 먹는 게 진짜 중요해! 맛집부터 딱딱 골라서 너 일정 채워줄게.',
     icon: '🍜',
     tags: ['#맛집1순위', '#카페투어', '#먹으러가는여행', '#로컬맛', '#식도락러버'],
     characterName: '냠코',
@@ -68,7 +68,7 @@ export const characterMetadata: Record<CharacterType, CharacterMeta> = {
   },
   FAMILY_KEEPER: {
     name: '패밀리 가디언',
-    description: "내 여행의 기준은 '우리 가족이 편한가?' 모두가 즐겁고 무리 없는 일정이 좋은 따뜻한 여행러.",
+    description: '난 모두가 편해야 마음이 놓여. 너 여행도 가족 다 편한 코스로 챙겨줄게.',
     icon: '🧸',
     tags: ['#가족중심', '#아이와여행', '#안정적인동선', '#편안한코스', '#따뜻한여행러'],
     characterName: '다솜',
@@ -76,7 +76,7 @@ export const characterMetadata: Record<CharacterType, CharacterMeta> = {
   },
   ACTIVE: {
     name: '액티브 블루머',
-    description: '하루 종일 돌아다녀도 에너지 풀충전! 테마파크·액티비티·야외 스폿에 진심인 활동파.',
+    description: '난 움직여야 행복해! 너 일정도 신나게 뛰어다니는 스타일로 만들어줄게!',
     icon: '🔥',
     tags: ['#움직여야행복해', '#테마파크러버', '#액티비티매니아', '#활동파여행', '#에너지뿜뿜'],
     characterName: '쑥쑥',
@@ -92,34 +92,34 @@ interface CharacterCards {
 
 export const characterCards: Record<CharacterType, CharacterCards> = {
   PLANNER: {
-    start: '기본 정보는 이렇게 깔끔하게 준비됐어요!',
-    mood: '여행 분위기도 계획대로 딱 맞게 정리해뒀어요.',
-    detail: '동선·조건·우선순서까지 꼼꼼하게 들어가 있어요.',
+    start: '기본 정보는 내가 깔끔하게 정리해놨어!',
+    mood: '너가 고른 스타일, 이렇게 정리해뒀어!',
+    detail: '디테일까지 완전 효율적으로 딱 맞춰놨어!',
   },
   HEALER: {
-    start: '천천히, 편안하게 떠날 준비가 되어 있어요.',
-    mood: '여행 무드는 여유롭고 부드러운 편이에요.',
-    detail: '편안한 이동과 무리 없는 옵션들만 모아뒀어요.',
+    start: '출발 준비는 편안하게 끝났어. 천천히 가자!',
+    mood: '이번 여행 무드… 진짜 여유롭고 좋다~',
+    detail: '너무 바쁘지 않게, 마음 편한 디테일들로 채웠어.',
   },
   DISCOVERER: {
-    start: '출발 정보는 준비 끝! 이제 새로운 공간들을 찾아가볼까요?',
-    mood: "여행 무드는 ‘발견’과 ‘분위기 탐험’에 초점이 맞춰져 있어요.",
-    detail: '로컬 분위기와 색다른 스팟 중심으로 조건이 채워져 있어요.',
+    start: '기본 세팅 끝! 이제 진짜 재밌는 거 시작해볼까?',
+    mood: '이번 무드는 발견 모드지! 재밌는 곳들 많아.',
+    detail: '감성 있는 로컬 스팟들을 여기저기 넣어놨지!',
   },
   FOODIE: {
-    start: '기본 여행 정보는 준비됐어요. 이제 맛있는 여정만 남았어요!',
-    mood: "여행 스타일은 ‘맛집 중심’으로 설정돼 있어요.",
-    detail: '로컬 맛집·카페 같은 디테일들이 잘 담겨 있어요.',
+    start: '출발 정보는 준비 완료! 이제 맛집 채울 차례야!',
+    mood: '맛있게 먹는 여행, 딱 너한테 맞게 만들어놨어!',
+    detail: '맛집·카페는 내가 다 챙겼지~ 걱정 ㄴㄴ!',
   },
   FAMILY_KEEPER: {
-    start: '모두가 편한 출발 준비가 되어 있어요.',
-    mood: '여행 분위기는 안정적이고 가족 친화적이에요.',
-    detail: '아이 동선·편안한 코스·휴식 중심 옵션이 들어 있어요.',
+    start: '가족 모두 편하게 출발할 준비 해뒀어.',
+    mood: '가족 다 편한 분위기로 만들어놨어.',
+    detail: '아이도 어른도 편한 동선으로 정리해뒀어.',
   },
   ACTIVE: {
-    start: '기본 정보는 완료! 전력질주 여행 준비됐어요!',
-    mood: '여행 무드는 에너지 가득한 액티비티 중심이에요.',
-    detail: '테마파크·야외·활동 중심 조건들이 꽉 차 있어요.',
+    start: '기본 세팅 완전 OK! 이제 신나게 달려보자!',
+    mood: '이번 여행 무드는 에너지 풀충전! 완전 내 스타일이지?',
+    detail: '액티비티·테마파크 중심으로 꽉꽉 넣어놨어!',
   },
 }
 
